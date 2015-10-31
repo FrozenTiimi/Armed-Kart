@@ -5,15 +5,9 @@ using System.Collections;
 /// <summary>
 /// Handles the player's movement, rotation, etc.
 /// </summary>
-public class PlayerHandler : MonoBehaviour 
+public class PlayerHandler : BasicEntityHandler 
 {
 	//TODO: This is currently ported for PC. PORT TO ANDROID LATER
-
-	/// <summary>
-	/// Gets or sets the charactercontroller (player)
-	/// </summary>
-	/// <value>The player.</value>
-	private CharacterController Player { get; set; }
 
 	/// <summary>
 	/// The type of the car.
@@ -28,11 +22,7 @@ public class PlayerHandler : MonoBehaviour
 	/// The car's current velocity, limit is car type's maximum speed
 	/// </summary>
 	private float CurrentVelocity = 0;
-
-	/// <summary>
-	/// The GRAVITY constant, like in real life (9.81 m/s)
-	/// </summary>
-	const float GRAVITY = 9.81f;
+	
 	const float ROTATE_FACTOR = 1.15f;
 	const float BRAKE_FACTOR = 1.02f; //TODO: OBSOLETE, REMOVE LATER?
 	const float COLLISION_SPEED_FACTOR = 8f; //TODO: Fix this
@@ -42,15 +32,13 @@ public class PlayerHandler : MonoBehaviour
 
 	private bool IsRotating { get; set; }
 	private bool IsColliding { get; set; }
-
-	private Vector3 StartingPosition { get; set; }
 	
 	/// <summary>
 	/// Used to initialize the player
 	/// </summary>
 	private void Start () 
 	{
-		this.StartingPosition = transform.position;
+		base.Start ();
 
 		//TODO: Add all the car types. 
 		// Initializes the car based on the type.
@@ -66,15 +54,12 @@ public class PlayerHandler : MonoBehaviour
 	/// <summary>
 	/// Handles the player updates
 	/// </summary>
-	private void Update () 
+	private void Update ()
 	{
-		this.Player = GetComponent<CharacterController> ();
+		base.Update ();
 
 		this.HandlePlayerRotation ();
 		this.HandlePlayerMovement ();
-
-		if (transform.position.y < 0) // H4X0R DETECTED !!!!!!!!!
-			transform.position = this.StartingPosition; // Go back to your corner of shame
 	}
 
 	/// <summary>
@@ -201,13 +186,13 @@ public class PlayerHandler : MonoBehaviour
 
 		this.CurrentVelocity /= (((2f * curMaxSpeed) - curMaxSpeed) / curMaxSpeed);
 
-		var speed = new Vector3 (0, (this.Player.isGrounded) ? 0 : -GRAVITY /* handles the gravity */, (this.CurrentVelocity / REALISM_FACTOR) * -1);
+		var speed = new Vector3 (0, 0, (this.CurrentVelocity / REALISM_FACTOR) * -1);
 		// We cut the velocity there ^ not to make the car too fast
 		speed = transform.rotation * speed;
 
 		// This works because I removed the rigidbody component from the character. 
 		// We do not need that, terrain handles collision fine already.
-		this.Player.Move (speed * Time.deltaTime);
+		base.Player.Move (speed * Time.deltaTime);
 	}
 
 	private void OnTriggerEnter()

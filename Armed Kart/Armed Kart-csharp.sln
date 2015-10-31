@@ -1,6 +1,8 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2008
 
+Project("{B39E1F22-DB99-006D-8292-3CA9B728E29A}") = "Armed Kart", "Assembly-CSharp-firstpass-vs.csproj", "{12960657-AB87-4F38-18AD-FB619B4B3691}"
+EndProject
 Project("{B39E1F22-DB99-006D-8292-3CA9B728E29A}") = "Armed Kart", "Assembly-CSharp-vs.csproj", "{CABA3E73-17FF-ECD9-4A2F-F697D64B2DCD}"
 EndProject
 Global
@@ -9,6 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{12960657-AB87-4F38-18AD-FB619B4B3691}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12960657-AB87-4F38-18AD-FB619B4B3691}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12960657-AB87-4F38-18AD-FB619B4B3691}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12960657-AB87-4F38-18AD-FB619B4B3691}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CABA3E73-17FF-ECD9-4A2F-F697D64B2DCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CABA3E73-17FF-ECD9-4A2F-F697D64B2DCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CABA3E73-17FF-ECD9-4A2F-F697D64B2DCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -17,7 +23,7 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-															GlobalSection(MonoDevelopProperties) = preSolution
+																			GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Assembly-CSharp.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1
