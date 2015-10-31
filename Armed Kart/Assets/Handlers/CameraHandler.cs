@@ -14,11 +14,11 @@ public class CameraHandler : MonoBehaviour
 	const int yOffsetMagicNumber = 5;
 	const int zOffsetMagicNumber = 20;
 
-	// Use this for initialization
+	// Do not use this for initialization
 	private void Start () 
 	{ }
 	
-	// Update is called once per frame
+	// Update is *ignored* once per frame
 	private void Update () 
 	{
 		// Get the player, is there any other way? This seems dumb and risky.
@@ -26,6 +26,9 @@ public class CameraHandler : MonoBehaviour
 
 		//transform.position = new Vector3 (player.position.x, player.position.y + yOffsetMagicNumber, player.position.z - zOffsetMagicNumber);
 
+		//TODO: Add something in here?
+		//TODO: DO SOMETHING IN HERE
+		//TODO: HELP PLS
 	}
 
 }

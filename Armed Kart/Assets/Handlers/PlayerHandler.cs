@@ -42,12 +42,16 @@ public class PlayerHandler : MonoBehaviour
 
 	private bool IsRotating { get; set; }
 	private bool IsColliding { get; set; }
+
+	private Vector3 StartingPosition { get; set; }
 	
 	/// <summary>
 	/// Used to initialize the player
 	/// </summary>
 	private void Start () 
 	{
+		this.StartingPosition = transform.position;
+
 		//TODO: Add all the car types. 
 		// Initializes the car based on the type.
 		switch (CarType) 
@@ -68,6 +72,9 @@ public class PlayerHandler : MonoBehaviour
 
 		this.HandlePlayerRotation ();
 		this.HandlePlayerMovement ();
+
+		if (transform.position.y < 0) // H4X0R DETECTED !!!!!!!!!
+			transform.position = this.StartingPosition; // Go back to your corner of shame
 	}
 
 	/// <summary>
