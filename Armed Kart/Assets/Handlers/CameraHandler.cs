@@ -22,8 +22,10 @@ public class CameraHandler : MonoBehaviour
 	private void Update () 
 	{
 		// Get the player, is there any other way? This seems dumb and risky.
-		var player = transform.parent.GetChild (0);
+		var player = transform.parent;
 
-		transform.position = new Vector3 (player.position.x, player.position.y + yOffsetMagicNumber, player.position.z - zOffsetMagicNumber);
+		//transform.position = new Vector3 (player.position.x, player.position.y + yOffsetMagicNumber, player.position.z - zOffsetMagicNumber);
+
 	}
+
 }

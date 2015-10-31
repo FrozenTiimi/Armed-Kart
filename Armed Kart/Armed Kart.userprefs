@@ -1,12 +1,12 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Handlers\PlayerHandler.cs">
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Handlers\GUIHandler.cs">
     <Files>
-      <File FileName="Assets\Handlers\PlayerHandler.cs" Line="83" Column="3" />
-      <File FileName="Assets\Handlers\MainMenuButtonHandler.cs" Line="21" Column="5" />
-      <File FileName="Assets\Handlers\CarHandler.cs" Line="14" Column="28" />
-      <File FileName="Assets\Handlers\Cars\TestCar.cs" Line="6" Column="15" />
-      <File FileName="Assets\Handlers\CameraHandler.cs" Line="4" Column="14" />
+      <File FileName="Assets\Handlers\GUIHandler.cs" Line="30" Column="1" />
+      <File FileName="Assets\Handlers\PlayerHandler.cs" Line="174" Column="49" />
+      <File FileName="Assets\Handlers\CameraHandler.cs" Line="28" Column="3" />
+      <File FileName="Assets\Handlers\CarHandler.cs" Line="30" Column="16" />
+      <File FileName="Assets\Handlers\Cars\TestCar.cs" Line="9" Column="15" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

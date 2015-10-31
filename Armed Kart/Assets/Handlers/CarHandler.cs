@@ -12,6 +12,9 @@ public abstract class CarHandler
 	/// </summary>
 	protected float MaxSpeed;
 	protected float CarWeight;
+	protected float CarReverseSpeed;
+
+	protected float[] SpeedFactors = new float[] { 0f, 0f };
 
 	/// <summary>
 	/// Gets the car's max speed
@@ -29,6 +32,16 @@ public abstract class CarHandler
 	public float GetCarWeight()
 	{
 		return CarWeight;
+	}
+
+	public float[] GetSpeedFactors()
+	{
+		return SpeedFactors;
+	}
+
+	public float GetCarReverseSpeed()
+	{
+		return CarReverseSpeed;
 	}
 }
 

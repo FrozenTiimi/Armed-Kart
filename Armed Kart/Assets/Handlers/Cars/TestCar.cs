@@ -11,7 +11,10 @@ public class TestCar : CarHandler
 	/// </summary>
 	public TestCar()
 	{
-		base.MaxSpeed = 250; // 250 km/h
-		base.CarWeight = 1; // 1 ton
+		base.MaxSpeed = 250f; // 250 km/h
+		base.CarWeight = 1f; // 1 ton
+		base.CarReverseSpeed = 20f;
+
+		base.SpeedFactors = new float[2] { 5f, 10f };
 	}
 }
