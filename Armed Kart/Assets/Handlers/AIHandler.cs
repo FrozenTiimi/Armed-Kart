@@ -7,7 +7,7 @@ public class AIHandler : BasicEntityHandler
 	private bool MustMove { get; set; }
 
 	// Use this for initialization
-	private void Start () 
+	private new void Start () 
 	{
 		base.Start (); // always call these first
 
@@ -15,7 +15,7 @@ public class AIHandler : BasicEntityHandler
 	}
 	
 	// Update is called once per frame
-	private void Update () 
+	private new void Update () 
 	{
 		base.Update (); // always call these first
 
@@ -25,8 +25,10 @@ public class AIHandler : BasicEntityHandler
 		this.HandleAIMovement ();
 	}
 
-	private void LateUpdate()
+	private new void LateUpdate()
 	{
+		base.LateUpdate ();
+
 		if (LastPosition == transform.position) 
 			this.MustMove = true;
 		else if (MustMove)

@@ -27,7 +27,7 @@ public class MainMenuButtonHandler : MonoBehaviour
 			}
 
 			// load the level based on NextScene
-			Application.LoadLevel ("Scenes/" + NextScene);
+			Application.LoadLevel (NextScene);
 		});
 	}
 }

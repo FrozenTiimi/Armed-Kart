@@ -7,6 +7,7 @@ using System.Collections;
 /// </summary>
 public class BasicEntityHandler : MonoBehaviour 
 {
+
 	/// <summary>
 	/// Gets or sets the charactercontroller (player)
 	/// </summary>
@@ -31,9 +32,28 @@ public class BasicEntityHandler : MonoBehaviour
 	{
 		this.Player = GetComponent<CharacterController> ();
 
+		var ray = new Ray (this.Player.transform.position, Vector3.down + this.Player.transform.rotation.eulerAngles);
+		var hit = new RaycastHit ();
+
+		if (Physics.Raycast (ray, out hit)) 
+		{
+			Debug.Log (hit.normal);
+			/*
+			this.Player.transform.Rotate (new Vector3(-hit.normal.x, 0, 0));
+			*/
+		}
+
 		this.Player.Move (new Vector3 (0, this.Player.isGrounded ? 0 : -GRAVITY, 0) * Time.deltaTime);
 
 		if (transform.position.y < 0) // H4X0R DETECTED !!!!!!!!!
 			transform.position = this.StartingPosition; // Go back to your corner of shame
+	}
+
+	protected void LateUpdate()
+	{/*
+		this.Player.transform.Rotate(new Vector3(
+			this.Player.transform.rotation.x, this.Player.transform.rotation.y / 2, this.Player.transform.rotation.z
+			));
+	*/
 	}
 }

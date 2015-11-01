@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor;
 using System.Collections;
 
 /// <summary>
@@ -36,7 +35,7 @@ public class PlayerHandler : BasicEntityHandler
 	/// <summary>
 	/// Used to initialize the player
 	/// </summary>
-	private void Start () 
+	private new void Start () 
 	{
 		base.Start ();
 
@@ -54,12 +53,17 @@ public class PlayerHandler : BasicEntityHandler
 	/// <summary>
 	/// Handles the player updates
 	/// </summary>
-	private void Update ()
+	private new void Update ()
 	{
 		base.Update ();
 
 		this.HandlePlayerRotation ();
 		this.HandlePlayerMovement ();
+	}
+
+	private new void LateUpdate()
+	{
+		base.LateUpdate();
 	}
 
 	/// <summary>
@@ -170,13 +174,15 @@ public class PlayerHandler : BasicEntityHandler
 		if (IsRotating)
 			speedFactor /= ROTATE_FACTOR;
 
+		/*
 		if (IsColliding)
 			speedFactor /= COLLISION_SPEED_FACTOR;
+		*/
 
 		this.CurrentVelocity += speedFactor;
 		this.LastVelocity = CurrentVelocity;
 
-		Debug.Log (this.CurrentVelocity);
+		//Debug.Log (this.CurrentVelocity);
 
 		//TODO: Make the character faster, make it "realistic", e.g. the car starts off slow, but gets faster and faster, 
 		//		and nearing the end, gets faster by smaller amounts.
@@ -191,23 +197,26 @@ public class PlayerHandler : BasicEntityHandler
 		speed = transform.rotation * speed;
 
 		// This works because I removed the rigidbody component from the character. 
-		// We do not need that, terrain handles collision fine already.
+		// We do not need that, terrain ha0ndles collision fine already.
 		base.Player.Move (speed * Time.deltaTime);
 	}
 
-	private void OnTriggerEnter()
+	private void OnCollisionStay(Collision other)
 	{
-		this.IsColliding = true;
-	}
-
-	private void OnTriggerLeave()
-	{
-		this.IsColliding = false;
+		Debug.Log ("Collision !!!!" + other.collider.name);
 	}
 
 	private void NullFloatValues(ref float first, ref float second)
 	{
 		first = 0;
 		second = 0;
+	}
+
+	private void OnTriggerStay(Collider other)
+	{
+		/*
+		if (other.name != name)
+			Debug.Log ("Nice meme!" + other.name);
+		*/
 	}
 }
