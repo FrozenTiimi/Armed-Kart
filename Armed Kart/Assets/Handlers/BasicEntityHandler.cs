@@ -12,7 +12,7 @@ public class BasicEntityHandler : MonoBehaviour
 	/// Gets or sets the charactercontroller (player)
 	/// </summary>
 	/// <value>The player.</value>
-	protected CharacterController Player { get; set; }
+	private CharacterController Player { get; set; }
 
 	private Vector3 StartingPosition { get; set; }
 
@@ -22,38 +22,49 @@ public class BasicEntityHandler : MonoBehaviour
 	const float GRAVITY = 9.81f;
 
 	// Use this for initialization
-	protected void Start () 
+	private void Start () 
 	{
 		this.StartingPosition = transform.position;
 	}
 	
 	// Update is called once per frame
-	protected void Update () 
+	private void Update () 
 	{
 		this.Player = GetComponent<CharacterController> ();
 
-		var ray = new Ray (this.Player.transform.position, Vector3.down + this.Player.transform.rotation.eulerAngles);
-		var hit = new RaycastHit ();
+		var verticalSpeed = 0f;
 
-		if (Physics.Raycast (ray, out hit)) 
+		// IMPROVED GRAVITY
+		if (this.Player.isGrounded)
 		{
-			Debug.Log (hit.normal);
-			/*
-			this.Player.transform.Rotate (new Vector3(-hit.normal.x, 0, 0));
-			*/
+			verticalSpeed = -this.Player.stepOffset / Time.deltaTime;
+		}
+		else
+		{
+			verticalSpeed -= GRAVITY * Time.deltaTime;
 		}
 
-		this.Player.Move (new Vector3 (0, this.Player.isGrounded ? 0 : -GRAVITY, 0) * Time.deltaTime);
+		this.Player.Move (new Vector3 (0, verticalSpeed, 0));
 
 		if (transform.position.y < 0) // H4X0R DETECTED !!!!!!!!!
 			transform.position = this.StartingPosition; // Go back to your corner of shame
 	}
 
-	protected void LateUpdate()
+	private void LateUpdate()
 	{/*
 		this.Player.transform.Rotate(new Vector3(
 			this.Player.transform.rotation.x, this.Player.transform.rotation.y / 2, this.Player.transform.rotation.z
 			));
 	*/
+	}
+
+	private void OnCollisionEnter(Collision other)
+	{
+		Debug.Log ("Collision enter !!!!" + other.collider.name);
+	}
+
+	private void OnCollisionStay(Collision other)
+	{
+		Debug.Log ("Collision !!!!" + other.collider.name);
 	}
 }

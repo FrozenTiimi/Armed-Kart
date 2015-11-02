@@ -4,9 +4,11 @@ using System.Collections;
 /// <summary>
 /// Handles the player's movement, rotation, etc.
 /// </summary>
-public class PlayerHandler : BasicEntityHandler 
+public class PlayerHandler : MonoBehaviour 
 {
 	//TODO: This is currently ported for PC. PORT TO ANDROID LATER
+
+	private CharacterController Player { get; set; }
 
 	/// <summary>
 	/// The type of the car.
@@ -35,10 +37,8 @@ public class PlayerHandler : BasicEntityHandler
 	/// <summary>
 	/// Used to initialize the player
 	/// </summary>
-	private new void Start () 
+	private void Start () 
 	{
-		base.Start ();
-
 		//TODO: Add all the car types. 
 		// Initializes the car based on the type.
 		switch (CarType) 
@@ -53,17 +53,37 @@ public class PlayerHandler : BasicEntityHandler
 	/// <summary>
 	/// Handles the player updates
 	/// </summary>
-	private new void Update ()
+	private void Update ()
 	{
-		base.Update ();
+		this.Player = GetComponent<CharacterController> ();
 
 		this.HandlePlayerRotation ();
 		this.HandlePlayerMovement ();
 	}
 
-	private new void LateUpdate()
+	private void LateUpdate()
 	{
-		base.LateUpdate();
+
+	}
+
+	private Vector3 BackLeft
+	{
+		get { return transform.rotation * new Vector3 (transform.position.x - (transform.lossyScale.x / 2), transform.position.y, transform.position.z - (transform.lossyScale.z / 2)); }
+	}
+
+	private Vector3 BackRight
+	{
+		get { return transform.rotation * new Vector3 (transform.position.x + (transform.lossyScale.x / 2), transform.position.y, transform.position.z - (transform.lossyScale.z / 2)); }
+	}
+
+	private Vector3 FrontLeft
+	{
+		get { return transform.rotation * new Vector3 (transform.position.x - (transform.lossyScale.x / 2), transform.position.y, transform.position.z + (transform.lossyScale.z / 2)); }
+	}
+
+	private Vector3 FrontRight
+	{
+		get { return transform.rotation * new Vector3 (transform.position.x + (transform.lossyScale.x / 2), transform.position.y, transform.position.z + (transform.lossyScale.z / 2)); }
 	}
 
 	/// <summary>
@@ -85,11 +105,37 @@ public class PlayerHandler : BasicEntityHandler
 			rot -= (CurrentVelocity / 2);
 			rot /= 500;
 
+			Debug.Log (this.Player.isGrounded.ToString() + this.Player.transform.position.y.ToString());
+
 			if (this.CurrentVelocity > 1 || this.CurrentVelocity < -1)
-				transform.Rotate(new Vector3(0, rot, 0));
+			{
+				//if (this.Player.isGrounded)
+					transform.Rotate(new Vector3(0, rot, 0));
+				//else
+					//transform.Rotate(new Vector3(0, rot, rot));
+			}
 		}
 		else
 			IsRotating = false;
+
+		var lr = new RaycastHit();
+		var rr = new RaycastHit();
+		var lf = new RaycastHit();
+		var rf = new RaycastHit();
+		
+		GetCubedRaycast (out lr, out rr, out lf, out rf);
+		
+		var upDir = GetCubedUpDirectoryNormalized (lr, rr, lf, rf);
+		
+		Debug.DrawRay(rr.point, Vector3.up);
+		Debug.DrawRay(lr.point, Vector3.up);
+		Debug.DrawRay(lf.point, Vector3.up);
+		Debug.DrawRay(rf.point, Vector3.up);
+
+		//Debug.Log (upDir);
+
+		//if (upDir.z > 0)
+		//	transform.up = upDir;
 	}
 
 	private float LastVelocity = 0;
@@ -195,15 +241,19 @@ public class PlayerHandler : BasicEntityHandler
 		var speed = new Vector3 (0, 0, (this.CurrentVelocity / REALISM_FACTOR) * -1);
 		// We cut the velocity there ^ not to make the car too fast
 		speed = transform.rotation * speed;
+		speed = speed * Time.deltaTime;
 
 		// This works because I removed the rigidbody component from the character. 
-		// We do not need that, terrain ha0ndles collision fine already.
-		base.Player.Move (speed * Time.deltaTime);
+		// We do not need that, terrain handles collision fine already.
+		this.Player.Move (speed);
 	}
 
 	private void OnCollisionStay(Collision other)
 	{
-		Debug.Log ("Collision !!!!" + other.collider.name);
+	}
+
+	private void OnCollisionEnter(Collision other)
+	{
 	}
 
 	private void NullFloatValues(ref float first, ref float second)
@@ -212,11 +262,33 @@ public class PlayerHandler : BasicEntityHandler
 		second = 0;
 	}
 
+	private void GetCubedRaycast(out RaycastHit bl, out RaycastHit br, out RaycastHit fl, out RaycastHit fr)
+	{
+		Physics.Raycast(BackLeft + Vector3.up, Vector3.down, out bl);
+		Physics.Raycast(BackRight + Vector3.up, Vector3.down, out br);
+		Physics.Raycast(FrontLeft + Vector3.up, Vector3.down, out fl);
+		Physics.Raycast(FrontRight + Vector3.up, Vector3.down, out fr);
+	}
+
+	private Vector3 GetCubedUpDirectoryNormalized(RaycastHit bl, RaycastHit br, RaycastHit fl, RaycastHit fr)
+	{
+		return (Vector3.Cross(br.point - Vector3.up, bl.point - Vector3.up) +
+		 			Vector3.Cross(bl.point - Vector3.up, fl.point - Vector3.up) +
+		 			Vector3.Cross(fl.point - Vector3.up, fr.point - Vector3.up) +
+		 			Vector3.Cross(fr.point - Vector3.up, br.point - Vector3.up)
+		 		).normalized;
+	}
+
 	private void OnTriggerStay(Collider other)
 	{
-		/*
-		if (other.name != name)
+
+		//if (other.name != name)
 			Debug.Log ("Nice meme!" + other.name);
-		*/
+
+	}
+	
+	private void OnControllerColliderHit(ControllerColliderHit hit)
+	{
+		/* */
 	}
 }

@@ -1,34 +1,31 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class AIHandler : BasicEntityHandler 
+public class AIHandler : MonoBehaviour 
 {
+	private CharacterController Player { get; set; }
+
 	private Vector3 LastPosition { get; set; }
 	private bool MustMove { get; set; }
 
 	// Use this for initialization
-	private new void Start () 
+	private void Start () 
 	{
-		base.Start (); // always call these first
-
 		this.MustMove = false;
 	}
 	
 	// Update is called once per frame
-	private new void Update () 
+	private void Update () 
 	{
-		base.Update (); // always call these first
-
 		//TODO: Make this happen! Currently, this is COMPLETELY RANDOM !!!
+		this.Player = GetComponent<CharacterController> ();
 
 		this.HandleAIRotation ();
 		this.HandleAIMovement ();
 	}
 
-	private new void LateUpdate()
+	private void LateUpdate()
 	{
-		base.LateUpdate ();
-
 		if (LastPosition == transform.position) 
 			this.MustMove = true;
 		else if (MustMove)
@@ -61,6 +58,15 @@ public class AIHandler : BasicEntityHandler
 		var speed = new Vector3 (0, 0, 90);
 		speed = transform.rotation * speed;
 
-		base.Player.Move (speed * Time.deltaTime);
+		this.Player.Move (speed * Time.deltaTime);
+	}
+
+	private void OnCollisionEnter(Collision other)
+	{
+	}
+
+	private void OnCollisionStay(Collision other)
+	{
+
 	}
 }
