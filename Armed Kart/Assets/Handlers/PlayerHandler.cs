@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Diagnostics;
 
 /// <summary>
 /// Handles the player's movement, rotation, etc.
@@ -7,10 +8,27 @@ using System.Collections;
 public class PlayerHandler : MonoBehaviour 
 {
 	//TODO: This is currently ported for PC. PORT TO ANDROID LATER
+	public GameObject frontRight;
+	public GameObject frontLeft;
+	public GameObject backRight;
+	public GameObject backLeft;
 
 	private CharacterController Player { get; set; }
 
-	private Vector3 BackLeft
+	public void drawRaycast(GameObject wheel)
+	{
+		var ray = new Ray(wheel.transform.position, Vector3.down);
+		var rHit = wheel.transform.GetComponent<RaycastHit>();
+
+		UnityEngine.Debug.DrawRay (wheel.transform.position, Vector3.down);
+
+		if (Physics.Raycast (ray, out rHit)) 
+		{
+
+		}
+	}
+
+	public Vector3 BackLeft
 	{
 		get { return new Vector3 (transform.position.x - (transform.lossyScale.x / 2), transform.position.y, transform.position.z - (transform.lossyScale.z / 2)); }
 	}
@@ -42,12 +60,12 @@ public class PlayerHandler : MonoBehaviour
 	/// <summary>
 	/// The car's current velocity, limit is car type's maximum speed
 	/// </summary>
-	private float CurrentVelocity = 0;
+	public float CurrentVelocity = 0;
 	
-	const float ROTATE_FACTOR = 1.15f;
+	//TODO: REMOVE LATER const float ROTATE_FACTOR = 1.15f;
 	const float BRAKE_FACTOR = 1.02f; //TODO: OBSOLETE, REMOVE LATER?
 	const float COLLISION_SPEED_FACTOR = 8f; //TODO: Fix this
-	const float REALISM_FACTOR = 4f; // used to divide the velocity of the car on-screen
+	const float REALISM_FACTOR = 3f; // used to divide the velocity of the car on-screen
 	const int SPEED_DROP_FACTOR = 10;
 	const int BRAKE_SPEED_DROP_FACTOR = 5;
 
@@ -59,6 +77,8 @@ public class PlayerHandler : MonoBehaviour
 	/// </summary>
 	private void Start () 
 	{
+		backLeft.transform.GetComponent<RaycastHit> ();
+		if (Physics.Raycast)
 		//TODO: Add all the car types. 
 		// Initializes the car based on the type.
 		switch (CarType) 
@@ -105,8 +125,6 @@ public class PlayerHandler : MonoBehaviour
 			rot -= (CurrentVelocity / 2);
 			rot /= 500;
 
-			Debug.Log (this.Player.isGrounded.ToString() + this.Player.transform.position.y.ToString());
-
 			if (this.CurrentVelocity > 1 || this.CurrentVelocity < -1)
 			{
 				//if (this.Player.isGrounded)
@@ -127,18 +145,19 @@ public class PlayerHandler : MonoBehaviour
 		
 		var upDir = GetCubedUpDirectoryNormalized (lr, rr, lf, rf);
 		
-		Debug.DrawRay(rr.point, Vector3.up, Color.blue);
-		Debug.DrawRay(lr.point, Vector3.up, Color.blue);
-		Debug.DrawRay(lf.point, Vector3.up, Color.blue);
-		Debug.DrawRay(rf.point, Vector3.up, Color.blue);
+		UnityEngine.Debug.DrawRay(rr.point, Vector3.up, Color.blue);
+		UnityEngine.Debug.DrawRay(lr.point, Vector3.up, Color.blue);
+		UnityEngine.Debug.DrawRay(lf.point, Vector3.up, Color.blue);
+		UnityEngine.Debug.DrawRay(rf.point, Vector3.up, Color.blue);
 
-		//Debug.Log (upDir);
+		//UnityEngine.Debug.Log (upDir);
 
 		//if (upDir.z > 0)
 		//	transform.up = upDir;
 	}
 
 	private float LastVelocity = 0;
+	private Stopwatch timer = new Stopwatch ();
 
 	/// <summary>
 	/// Handles the player movement.
@@ -150,6 +169,8 @@ public class PlayerHandler : MonoBehaviour
 		var curMaxSpeedNoThrust = curMaxSpeed / 2;
 		var speedFactors = PlayerCar.GetSpeedFactors ();
 		var curMaxReverseSpeed = PlayerCar.GetCarReverseSpeed ();
+		var acceleration = PlayerCar.GetCarAcceleration ();
+		var turnSpeedFactor = PlayerCar.GetCarTurningSpeedFactor ();
 
 		var speedFactor = 0f;
 
@@ -160,30 +181,43 @@ public class PlayerHandler : MonoBehaviour
 		else 
 		{*/
 		//TODO: My fiddly doos. You can remove these if you see fit.
-		if (Input.GetKey (KeyCode.W) && Input.GetKey (KeyCode.LeftShift))
+		if (Input.GetKey (KeyCode.W) && Input.GetKey (KeyCode.LeftShift)) // if shift + w is pressed
 		{	
-			if (this.CurrentVelocity > curMaxSpeed)
+
+			if (!timer.IsRunning && this.CurrentVelocity == 0)
 			{
-				speedFactor = -10;
+				timer = new Stopwatch();
+				timer.Start ();
 			}
-			else if (this.CurrentVelocity < curMaxSpeed / 2)
+
+			if (this.CurrentVelocity > curMaxSpeed) // if current velocity is higher than current max speed
 			{
-				speedFactor = speedFactors[1] * 2;
+				speedFactor = -SPEED_DROP_FACTOR; // then we slow down the car, stops bugs
 			}
-			else if (this.CurrentVelocity < curMaxSpeed)
+			else if (this.CurrentVelocity < curMaxSpeed / 2) // if current velocity is less than current max speed halved.
+			{
+				speedFactor = (speedFactors[1] * 2 / acceleration);
+			}
+			else if (this.CurrentVelocity < curMaxSpeed) // if current velocity is less than current max speed
 			{
 				speedFactor = speedFactors[0] * 2;
 			}
+
+			if (this.CurrentVelocity >= 100 && timer.IsRunning)
+			{
+				timer.Stop ();
+				UnityEngine.Debug.Log ("We accelerated to 100km/h in " + timer.ElapsedMilliseconds + " ms");
+			}
 		}
-		else if (Input.GetKey (KeyCode.W))
+		else if (Input.GetKey (KeyCode.W)) // if not
 		{
 			if (this.CurrentVelocity > curMaxSpeedNoThrust)
 			{
-				speedFactor = -10;
+				speedFactor = -SPEED_DROP_FACTOR;
 			}
 			else if (this.CurrentVelocity < curMaxSpeedNoThrust / 2)
 			{
-				speedFactor = speedFactors[1];
+				speedFactor = speedFactors[1] / acceleration;
 			}
 			else if (this.CurrentVelocity < curMaxSpeedNoThrust)
 			{
@@ -193,9 +227,9 @@ public class PlayerHandler : MonoBehaviour
 		else
 		{
 			// This steps in after no key is pressed, so, this stops the car
-			if (this.CurrentVelocity > 10)
+			if (this.CurrentVelocity > SPEED_DROP_FACTOR)
 			{
-				speedFactor = -10;
+				speedFactor = -SPEED_DROP_FACTOR;
 			}
 			else
 			{
@@ -218,7 +252,7 @@ public class PlayerHandler : MonoBehaviour
 		//}
 
 		if (IsRotating)
-			speedFactor /= ROTATE_FACTOR;
+			speedFactor /= turnSpeedFactor;
 
 		/*
 		if (IsColliding)
@@ -228,7 +262,7 @@ public class PlayerHandler : MonoBehaviour
 		this.CurrentVelocity += speedFactor;
 		this.LastVelocity = CurrentVelocity;
 
-		//Debug.Log (this.CurrentVelocity);
+		//UnityEngine.Debug.Log (this.CurrentVelocity);
 
 		//TODO: Make the character faster, make it "realistic", e.g. the car starts off slow, but gets faster and faster, 
 		//		and nearing the end, gets faster by smaller amounts.

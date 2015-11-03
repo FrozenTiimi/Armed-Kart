@@ -14,6 +14,8 @@ public class TestCar : CarHandler
 		base.MaxSpeed = 250f; // 250 km/h
 		base.CarWeight = 1f; // 1 ton
 		base.CarReverseSpeed = 20f;
+		base.Acceleration = 8f;
+		base.CarTurningSpeedFactor = 1.15f;
 
 		base.SpeedFactors = new float[2] { 5f, 10f };
 	}

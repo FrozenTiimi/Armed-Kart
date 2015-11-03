@@ -9,6 +9,8 @@ public class GUIHandler : MonoBehaviour
 	/// </summary>
 	public RenderTexture Minicam;
 
+	private PlayerHandler pHandler { get { return transform.parent.GetComponent<PlayerHandler>(); } }
+
 	private bool ShowDebugGUI { get; set; }
 	private float CurrentFPS { get; set; }
 	private long CurrentVertices { get; set; }
@@ -41,7 +43,8 @@ public class GUIHandler : MonoBehaviour
 		{
 			// The FPS Counter
 			GUI.Label (new Rect (0, 16, 200, 200), "FPS: " + this.CurrentFPS.ToString(), gS);
-			GUI.Label (new Rect (0, 34, 200, 200), "Vertices in current terrain: " + ((this.CurrentVertices < 0) ? "Calculating" : this.CurrentVertices.ToString()), gS);
+			GUI.Label (new Rect (0, 32, 200, 200), "Vertices in current terrain: " + ((this.CurrentVertices < 0) ? "Calculating" : this.CurrentVertices.ToString()), gS);
+			GUI.Label (new Rect (0, 48, 200, 200), "Car Speed: " + pHandler.CurrentVelocity, gS);
 		}
 
 		// Draw the minimap
