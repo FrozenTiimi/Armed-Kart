@@ -10,6 +10,26 @@ public class PlayerHandler : MonoBehaviour
 
 	private CharacterController Player { get; set; }
 
+	private Vector3 BackLeft
+	{
+		get { return new Vector3 (transform.position.x - (transform.lossyScale.x / 2), transform.position.y, transform.position.z - (transform.lossyScale.z / 2)); }
+	}
+	
+	private Vector3 BackRight
+	{
+		get { return new Vector3 (transform.position.x + (transform.lossyScale.x / 2), transform.position.y, transform.position.z - (transform.lossyScale.z / 2)); }
+	}
+	
+	private Vector3 FrontLeft
+	{
+		get { return new Vector3 (transform.position.x - (transform.lossyScale.x / 2), transform.position.y, transform.position.z + (transform.lossyScale.z / 2)); }
+	}
+	
+	private Vector3 FrontRight
+	{
+		get { return new Vector3 (transform.position.x + (transform.lossyScale.x / 2), transform.position.y, transform.position.z + (transform.lossyScale.z / 2)); }
+	}
+
 	/// <summary>
 	/// The type of the car.
 	/// </summary>
@@ -66,26 +86,6 @@ public class PlayerHandler : MonoBehaviour
 
 	}
 
-	private Vector3 BackLeft
-	{
-		get { return transform.rotation * new Vector3 (transform.position.x - (transform.lossyScale.x / 2), transform.position.y, transform.position.z - (transform.lossyScale.z / 2)); }
-	}
-
-	private Vector3 BackRight
-	{
-		get { return transform.rotation * new Vector3 (transform.position.x + (transform.lossyScale.x / 2), transform.position.y, transform.position.z - (transform.lossyScale.z / 2)); }
-	}
-
-	private Vector3 FrontLeft
-	{
-		get { return transform.rotation * new Vector3 (transform.position.x - (transform.lossyScale.x / 2), transform.position.y, transform.position.z + (transform.lossyScale.z / 2)); }
-	}
-
-	private Vector3 FrontRight
-	{
-		get { return transform.rotation * new Vector3 (transform.position.x + (transform.lossyScale.x / 2), transform.position.y, transform.position.z + (transform.lossyScale.z / 2)); }
-	}
-
 	/// <summary>
 	/// Handles the player rotation.
 	/// </summary>
@@ -127,10 +127,10 @@ public class PlayerHandler : MonoBehaviour
 		
 		var upDir = GetCubedUpDirectoryNormalized (lr, rr, lf, rf);
 		
-		Debug.DrawRay(rr.point, Vector3.up);
-		Debug.DrawRay(lr.point, Vector3.up);
-		Debug.DrawRay(lf.point, Vector3.up);
-		Debug.DrawRay(rf.point, Vector3.up);
+		Debug.DrawRay(rr.point, Vector3.up, Color.blue);
+		Debug.DrawRay(lr.point, Vector3.up, Color.blue);
+		Debug.DrawRay(lf.point, Vector3.up, Color.blue);
+		Debug.DrawRay(rf.point, Vector3.up, Color.blue);
 
 		//Debug.Log (upDir);
 
@@ -277,14 +277,6 @@ public class PlayerHandler : MonoBehaviour
 		 			Vector3.Cross(fl.point - Vector3.up, fr.point - Vector3.up) +
 		 			Vector3.Cross(fr.point - Vector3.up, br.point - Vector3.up)
 		 		).normalized;
-	}
-
-	private void OnTriggerStay(Collider other)
-	{
-
-		//if (other.name != name)
-			Debug.Log ("Nice meme!" + other.name);
-
 	}
 	
 	private void OnControllerColliderHit(ControllerColliderHit hit)

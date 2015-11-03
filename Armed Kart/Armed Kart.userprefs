@@ -1,10 +1,9 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Handlers\PlayerHandler.cs">
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Handlers\MinimapHandler.cs">
     <Files>
-      <File FileName="Assets\Handlers\BasicEntityHandler.cs" Line="60" Column="2" />
-      <File FileName="Assets\Handlers\PlayerHandler.cs" Line="84" Column="28" />
-      <File FileName="Assets\Handlers\AIHandler.cs" Line="59" Column="28" />
+      <File FileName="Assets\Handlers\MinimapHandler.cs" Line="54" Column="22" />
+      <File FileName="Assets\Handlers\PlayerHandler.cs" Line="115" Column="51" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
