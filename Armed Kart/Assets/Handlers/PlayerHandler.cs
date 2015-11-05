@@ -1,84 +1,76 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+
+//TODO: This is currently ported for PC. PORT TO ANDROID LATER
 
 /// <summary>
 /// Handles the player's movement, rotation, etc.
 /// </summary>
 public class PlayerHandler : MonoBehaviour 
 {
-	//TODO: This is currently ported for PC. PORT TO ANDROID LATER
+	private CharacterController Player { get; set; }
+	
+	/// <summary>
+	/// Gets or sets a value indicating whether the car is rotating.
+	/// </summary>
+	/// <value><c>true</c> if the car is rotating; otherwise, <c>false</c>.</value>
+	private bool IsRotating { get; set; }
+	/// <summary>
+	/// Gets or sets a value indicating whether the car is colliding.
+	/// TODO: Make this function properly
+	/// </summary>
+	/// <value><c>true</c> if the car is colliding; otherwise, <c>false</c>.</value>
+	private bool IsColliding { get; set; }
+
+	/// <summary>
+	/// List of checkpoints.
+	/// </summary>
+	public List<GameObject> CheckPoints = new List<GameObject>();
+
+	/*
+	 * The car's wheels
+	 */
 	public GameObject frontRight;
 	public GameObject frontLeft;
 	public GameObject backRight;
 	public GameObject backLeft;
 
-	private CharacterController Player { get; set; }
-
-	public void drawRaycast(GameObject wheel)
-	{
-		var ray = new Ray(wheel.transform.position, Vector3.down);
-		var rHit = wheel.transform.GetComponent<RaycastHit>();
-
-		UnityEngine.Debug.DrawRay (wheel.transform.position, Vector3.down);
-
-		if (Physics.Raycast (ray, out rHit)) 
-		{
-
-		}
-	}
-
-	public Vector3 BackLeft
-	{
-		get { return new Vector3 (transform.position.x - (transform.lossyScale.x / 2), transform.position.y, transform.position.z - (transform.lossyScale.z / 2)); }
-	}
-	
-	private Vector3 BackRight
-	{
-		get { return new Vector3 (transform.position.x + (transform.lossyScale.x / 2), transform.position.y, transform.position.z - (transform.lossyScale.z / 2)); }
-	}
-	
-	private Vector3 FrontLeft
-	{
-		get { return new Vector3 (transform.position.x - (transform.lossyScale.x / 2), transform.position.y, transform.position.z + (transform.lossyScale.z / 2)); }
-	}
-	
-	private Vector3 FrontRight
-	{
-		get { return new Vector3 (transform.position.x + (transform.lossyScale.x / 2), transform.position.y, transform.position.z + (transform.lossyScale.z / 2)); }
-	}
-
 	/// <summary>
 	/// The type of the car.
 	/// </summary>
 	public CarTypes CarType;
-	/// <summary>
-	/// To-be-set in the Start() method. LOOK THERE.
-	/// </summary>
-	private CarHandler PlayerCar;
 
 	/// <summary>
 	/// The car's current velocity, limit is car type's maximum speed
 	/// </summary>
 	public float CurrentVelocity = 0;
-	
-	//TODO: REMOVE LATER const float ROTATE_FACTOR = 1.15f;
+
+	private float LastVelocity = 0;
+
+	private Stopwatch timer = new Stopwatch ();
+
+	/// <summary>
+	/// To-be-set in the Start() method. LOOK THERE.
+	/// </summary>
+	public CarHandler PlayerCar;
+
+	/*
+	 * Game constants
+	 */
 	const float BRAKE_FACTOR = 1.02f; //TODO: OBSOLETE, REMOVE LATER?
 	const float COLLISION_SPEED_FACTOR = 8f; //TODO: Fix this
 	const float REALISM_FACTOR = 3f; // used to divide the velocity of the car on-screen
-	const int SPEED_DROP_FACTOR = 10;
+
+	const int SPEED_DROP_FACTOR = 2;
 	const int BRAKE_SPEED_DROP_FACTOR = 5;
 
-	private bool IsRotating { get; set; }
-	private bool IsColliding { get; set; }
-	
 	/// <summary>
 	/// Used to initialize the player
 	/// </summary>
 	private void Start () 
 	{
-		backLeft.transform.GetComponent<RaycastHit> ();
-		if (Physics.Raycast)
 		//TODO: Add all the car types. 
 		// Initializes the car based on the type.
 		switch (CarType) 
@@ -101,6 +93,9 @@ public class PlayerHandler : MonoBehaviour
 		this.HandlePlayerMovement ();
 	}
 
+	/// <summary>
+	/// Happens after Update()
+	/// </summary>
 	private void LateUpdate()
 	{
 
@@ -111,6 +106,8 @@ public class PlayerHandler : MonoBehaviour
 	/// </summary>
 	private void HandlePlayerRotation()
 	{
+		var curMaxSpeed = PlayerCar.GetMaxSpeed ();
+
 		//TODO: Make this rotation more realistic
 		// Simple rotation
 		if (Input.GetKey (KeyCode.A) || Input.GetKey (KeyCode.D)) 
@@ -121,9 +118,9 @@ public class PlayerHandler : MonoBehaviour
 
 			// 1 is full, -1 is full
 
-			rot *= 500;
-			rot -= (CurrentVelocity / 2);
-			rot /= 500;
+			rot *= curMaxSpeed * 2;
+			rot -= ((CurrentVelocity * 2) / 2);
+			rot /= curMaxSpeed * 2;
 
 			if (this.CurrentVelocity > 1 || this.CurrentVelocity < -1)
 			{
@@ -135,29 +132,7 @@ public class PlayerHandler : MonoBehaviour
 		}
 		else
 			IsRotating = false;
-
-		var lr = new RaycastHit();
-		var rr = new RaycastHit();
-		var lf = new RaycastHit();
-		var rf = new RaycastHit();
-		
-		GetCubedRaycast (out lr, out rr, out lf, out rf);
-		
-		var upDir = GetCubedUpDirectoryNormalized (lr, rr, lf, rf);
-		
-		UnityEngine.Debug.DrawRay(rr.point, Vector3.up, Color.blue);
-		UnityEngine.Debug.DrawRay(lr.point, Vector3.up, Color.blue);
-		UnityEngine.Debug.DrawRay(lf.point, Vector3.up, Color.blue);
-		UnityEngine.Debug.DrawRay(rf.point, Vector3.up, Color.blue);
-
-		//UnityEngine.Debug.Log (upDir);
-
-		//if (upDir.z > 0)
-		//	transform.up = upDir;
 	}
-
-	private float LastVelocity = 0;
-	private Stopwatch timer = new Stopwatch ();
 
 	/// <summary>
 	/// Handles the player movement.
@@ -171,16 +146,10 @@ public class PlayerHandler : MonoBehaviour
 		var curMaxReverseSpeed = PlayerCar.GetCarReverseSpeed ();
 		var acceleration = PlayerCar.GetCarAcceleration ();
 		var turnSpeedFactor = PlayerCar.GetCarTurningSpeedFactor ();
+		var carWeight = PlayerCar.GetCarWeight () + 1;
 
 		var speedFactor = 0f;
 
-		/*if (Input.GetKey (KeyCode.S)) 
-		{
-			this.CurrentVelocity = LastVelocity / (BRAKE_FACTOR);
-		} 
-		else 
-		{*/
-		//TODO: My fiddly doos. You can remove these if you see fit.
 		if (Input.GetKey (KeyCode.W) && Input.GetKey (KeyCode.LeftShift)) // if shift + w is pressed
 		{	
 
@@ -196,7 +165,7 @@ public class PlayerHandler : MonoBehaviour
 			}
 			else if (this.CurrentVelocity < curMaxSpeed / 2) // if current velocity is less than current max speed halved.
 			{
-				speedFactor = (speedFactors[1] * 2 / acceleration);
+				speedFactor = (speedFactors[1] * 2 / (acceleration / carWeight));
 			}
 			else if (this.CurrentVelocity < curMaxSpeed) // if current velocity is less than current max speed
 			{
@@ -217,7 +186,7 @@ public class PlayerHandler : MonoBehaviour
 			}
 			else if (this.CurrentVelocity < curMaxSpeedNoThrust / 2)
 			{
-				speedFactor = speedFactors[1] / acceleration;
+				speedFactor = speedFactors[1] / (acceleration / carWeight);
 			}
 			else if (this.CurrentVelocity < curMaxSpeedNoThrust)
 			{
@@ -241,34 +210,29 @@ public class PlayerHandler : MonoBehaviour
 		// Handles the braking
 		if (Input.GetKey (KeyCode.S)) 
 		{
-			speedFactor -= BRAKE_SPEED_DROP_FACTOR;
+			speedFactor -=  BRAKE_SPEED_DROP_FACTOR / this.CurrentVelocity;
 
 			if (this.CurrentVelocity < 0)
 				speedFactor += this.CurrentVelocity;
+
 		}
 
 		if (this.CurrentVelocity < -curMaxReverseSpeed)
 			speedFactor = 10;
-		//}
 
 		if (IsRotating)
 			speedFactor /= turnSpeedFactor;
 
 		/*
-		if (IsColliding)
+		 * When collision is detected correctly, use this to slow down the car
+		 * if (IsColliding)
 			speedFactor /= COLLISION_SPEED_FACTOR;
 		*/
 
 		this.CurrentVelocity += speedFactor;
 		this.LastVelocity = CurrentVelocity;
 
-		//UnityEngine.Debug.Log (this.CurrentVelocity);
-
-		//TODO: Make the character faster, make it "realistic", e.g. the car starts off slow, but gets faster and faster, 
-		//		and nearing the end, gets faster by smaller amounts.
-		//		like this: ___--¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯--_
-		//		where _ = 0 - 10, - = 10 - 40, ¯ = 40 - 100, - = 100 - 120, _ = 120 - 130
-		//		you should know this. BASICALLY, MAKE IT LIKE IN REAL LIFE
+		//TODO: make the car act like in real life
 
 		this.CurrentVelocity /= (((2f * curMaxSpeed) - curMaxSpeed) / curMaxSpeed);
 
@@ -277,42 +241,24 @@ public class PlayerHandler : MonoBehaviour
 		speed = transform.rotation * speed;
 		speed = speed * Time.deltaTime;
 
-		// This works because I removed the rigidbody component from the character. 
-		// We do not need that, terrain handles collision fine already.
 		this.Player.Move (speed);
 	}
 
-	private void OnCollisionStay(Collision other)
-	{
-	}
-
-	private void OnCollisionEnter(Collision other)
-	{
-	}
-
+	/// <summary>
+	/// Nulls the float values. E.G. sets all the values given into this function to zero
+	/// </summary>
+	/// <param name="first">First.</param>
+	/// <param name="second">Second.</param>
 	private void NullFloatValues(ref float first, ref float second)
 	{
 		first = 0;
 		second = 0;
 	}
 
-	private void GetCubedRaycast(out RaycastHit bl, out RaycastHit br, out RaycastHit fl, out RaycastHit fr)
-	{
-		Physics.Raycast(BackLeft + Vector3.up, Vector3.down, out bl);
-		Physics.Raycast(BackRight + Vector3.up, Vector3.down, out br);
-		Physics.Raycast(FrontLeft + Vector3.up, Vector3.down, out fl);
-		Physics.Raycast(FrontRight + Vector3.up, Vector3.down, out fr);
-	}
-
-	private Vector3 GetCubedUpDirectoryNormalized(RaycastHit bl, RaycastHit br, RaycastHit fl, RaycastHit fr)
-	{
-		return (Vector3.Cross(br.point - Vector3.up, bl.point - Vector3.up) +
-		 			Vector3.Cross(bl.point - Vector3.up, fl.point - Vector3.up) +
-		 			Vector3.Cross(fl.point - Vector3.up, fr.point - Vector3.up) +
-		 			Vector3.Cross(fr.point - Vector3.up, br.point - Vector3.up)
-		 		).normalized;
-	}
-	
+	/// <summary>
+	/// Raises the controller collider hit event.
+	/// </summary>
+	/// <param name="hit">Hit.</param>
 	private void OnControllerColliderHit(ControllerColliderHit hit)
 	{
 		/* */

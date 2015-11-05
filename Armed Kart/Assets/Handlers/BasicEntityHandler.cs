@@ -17,9 +17,12 @@ public class BasicEntityHandler : MonoBehaviour
 	private Vector3 StartingPosition { get; set; }
 
 	/// <summary>
-	/// The GRAVITY constant, like in real life (9.81 m/s)
+	/// The GRAVITY constant
 	/// </summary>
-	const float GRAVITY = 9.81f;
+	const float GRAVITY = 55f;
+	const float GRAVITY_ADD = 0.5f;
+
+	private float CurrentGravity = 0f;
 
 	// Use this for initialization
 	private void Start () 
@@ -32,16 +35,30 @@ public class BasicEntityHandler : MonoBehaviour
 	{
 		this.Player = GetComponent<CharacterController> ();
 
+		var carWeight = 2f; // default;
+
+		if (GetComponent <PlayerHandler>() ?? null) // checks if PlayerHandler is not found
+		{
+			carWeight = GetComponent<PlayerHandler> ().PlayerCar.GetCarWeight ();
+			carWeight += 1f;
+		} 
+
 		var verticalSpeed = 0f;
 
 		// IMPROVED GRAVITY
 		if (this.Player.isGrounded)
 		{
-			verticalSpeed = -this.Player.stepOffset / Time.deltaTime;
+			if (CurrentGravity > 0)
+				CurrentGravity = 0;
+
+			verticalSpeed = -(this.Player.stepOffset * carWeight) / Time.deltaTime;
 		}
 		else
 		{
-			verticalSpeed -= GRAVITY * Time.deltaTime;
+			if (CurrentGravity <= GRAVITY - GRAVITY_ADD)
+				CurrentGravity += GRAVITY_ADD;
+
+			verticalSpeed -= (CurrentGravity * carWeight) * Time.deltaTime;
 		}
 
 		this.Player.Move (new Vector3 (0, verticalSpeed, 0));

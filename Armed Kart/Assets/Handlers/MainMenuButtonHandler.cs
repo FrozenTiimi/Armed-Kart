@@ -11,6 +11,7 @@ public class MainMenuButtonHandler : MonoBehaviour
 	/// The next scene to navigate to after pressing the button
 	/// </summary>
 	public string NextScene;
+	public AudioClip menuSound;
 
 	/// <summary>
 	/// The starting method for this handler
@@ -19,6 +20,9 @@ public class MainMenuButtonHandler : MonoBehaviour
 	{
 		GetComponent<Button> ().onClick.AddListener (() =>
  		{
+			var source = GetComponent<AudioSource>();
+			source.PlayOneShot(menuSound);
+
 			if (NextScene == "Quit")
 			{
 				// quit the game
