@@ -55,6 +55,8 @@ public class PlayerHandler : MonoBehaviour
 	public float CurrentVelocity = 0f;
 	public float CurrentRotation = 0f;
 
+	public Vector3 CurrentSpeed;
+
 	private float LastVelocity = 0f; // TODO: Remove this?
 	private float CollideAngle = 0f;
 
@@ -102,7 +104,25 @@ public class PlayerHandler : MonoBehaviour
 	/// </summary>
 	private void LateUpdate()
 	{
+		/*
+		var pos = new Vector3(transform.position.x - (transform.lossyScale.x), transform.position.y, transform.position.z - (transform.lossyScale.z)); 
+		var pos2 = new Vector3(transform.position.x - (transform.lossyScale.x), transform.position.y, transform.position.z + (transform.lossyScale.z)); 
+		var pos3 = new Vector3(transform.position.x + (transform.lossyScale.x), transform.position.y, transform.position.z - (transform.lossyScale.z)); 
+		var pos4 = new Vector3(transform.position.x + (transform.lossyScale.x), transform.position.y, transform.position.z + (transform.lossyScale.z)); 
 
+		var nRot = DegToRad(this.CurrentRotation * 90);
+		UnityEngine.Debug.Log (this.CurrentRotation * 90);
+
+		pos = pos - new Vector3(Mathf.Cos (nRot), Mathf.Sin (nRot));
+		pos2 = pos2 - new Vector3(Mathf.Cos (nRot), Mathf.Sin (nRot));
+		pos3 = pos3 - new Vector3(Mathf.Cos (nRot), Mathf.Sin (nRot));
+		pos4 = pos4 - new Vector3(Mathf.Cos (nRot), Mathf.Sin (nRot));
+
+		UnityEngine.Debug.DrawRay (pos, transform.TransformDirection(Vector3.down), Color.red);
+		UnityEngine.Debug.DrawRay (pos2, transform.TransformDirection(Vector3.down), Color.blue);
+		UnityEngine.Debug.DrawRay (pos3, transform.TransformDirection(Vector3.down), Color.black);
+		UnityEngine.Debug.DrawRay (pos4, transform.TransformDirection(Vector3.down), Color.green);
+		*/
 	}
 
 	/// <summary>
@@ -121,7 +141,7 @@ public class PlayerHandler : MonoBehaviour
 			// 1 is full, -1 is full
 
 			rot *= curMaxSpeed * 2;
-			rot -= ((CurrentVelocity * 2) / 2);
+			rot -= (CurrentVelocity / 2f);
 			rot /= curMaxSpeed * 2;
 
 			this.CurrentRotation = rot;
@@ -255,6 +275,9 @@ public class PlayerHandler : MonoBehaviour
 		var zModifier = Flip (this.SetVelocityRealistic (this.CurrentVelocity)); // we flip the current velocity and make it realistic
 		var speed = new Vector3 (0, 0, zModifier);
 		speed = transform.rotation * speed; // we times the speed by the rotation quaternion to make the car actually move in the right direction
+
+		this.CurrentSpeed = speed;
+
 		speed = speed * Time.deltaTime; // we make the speed not dependent on FPS
 
 		// Get all the car's wheels
@@ -409,6 +432,17 @@ public class PlayerHandler : MonoBehaviour
 	private float HalfOf(float val)
 	{
 		return val / 2;
+	}
+
+	private float DegToRad(float value)
+	{
+		return (value) * (Mathf.PI / 180);
+	}
+	
+	private float RadToDeg(float value)
+	{
+		//return value;
+		return (value) / (Mathf.PI * 180);
 	}
 
 	/// <summary>
