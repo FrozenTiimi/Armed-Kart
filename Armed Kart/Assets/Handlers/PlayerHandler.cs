@@ -152,7 +152,7 @@ public class PlayerHandler : MonoBehaviour
 				IsRotating = true;
 
 				//if (this.Player.isGrounded)
-					transform.Rotate(new Vector3(0, rot, 0));
+				transform.Rotate(new Vector3(0, rot, 0));
 				//else
 					//transform.Rotate(new Vector3(0, rot, rot));
 			}

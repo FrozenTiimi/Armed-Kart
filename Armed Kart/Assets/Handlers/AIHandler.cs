@@ -11,6 +11,8 @@ public class AIHandler : MonoBehaviour
 	private Vector3 LastPosition { get; set; }
 	private bool MustMove { get; set; }
 
+	public CarTypes CarType;
+
 	// Use this for initialization
 	private void Start () 
 	{
@@ -29,12 +31,7 @@ public class AIHandler : MonoBehaviour
 
 	private void LateUpdate()
 	{
-		if (LastPosition == transform.position) 
-			this.MustMove = true;
-		else if (MustMove)
-			this.MustMove = false;
 
-		this.LastPosition = transform.position;
 	}
 
 	private System.Random DoubleGuess = new System.Random();
