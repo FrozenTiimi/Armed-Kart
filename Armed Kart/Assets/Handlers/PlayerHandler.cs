@@ -272,7 +272,7 @@ public class PlayerHandler : MonoBehaviour
 
 		this.CurrentVelocity /= this.CalculateCurrentVelocityAccelerationModifier(curMaxSpeed);
 
-		var zModifier = Flip (this.SetVelocityRealistic (this.CurrentVelocity)); // we flip the current velocity and make it realistic
+		var zModifier = Flip (this.SetVelocityRealistic (Mathf.Floor (this.CurrentVelocity))); // we flip the current velocity and make it realistic
 		var speed = new Vector3 (0, 0, zModifier);
 		speed = transform.rotation * speed; // we times the speed by the rotation quaternion to make the car actually move in the right direction
 

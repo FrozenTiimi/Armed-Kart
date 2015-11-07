@@ -23,6 +23,7 @@ public class BasicEntityHandler : MonoBehaviour
 	const float GRAVITY_ADD = 0.5f;
 
 	private float CurrentGravity = 0f;
+	private float VerticalSpeed = 0f;
 
 	// Use this for initialization
 	private void Start () 
@@ -43,25 +44,25 @@ public class BasicEntityHandler : MonoBehaviour
 			carWeight += 1f;
 		} 
 
-		var verticalSpeed = 0f;
+		this.VerticalSpeed = 0;
 
 		// IMPROVED GRAVITY
 		if (this.Player.isGrounded)
 		{
 			if (CurrentGravity > 0)
 				CurrentGravity = 0;
-
-			verticalSpeed = -(this.Player.stepOffset * carWeight) / Time.deltaTime;
+			
+			this.VerticalSpeed = -(this.Player.stepOffset * carWeight) / Time.deltaTime;
 		}
 		else
 		{
 			if (CurrentGravity <= GRAVITY - GRAVITY_ADD)
 				CurrentGravity += GRAVITY_ADD;
-
-			verticalSpeed -= (CurrentGravity * carWeight) * Time.deltaTime;
+			
+			this.VerticalSpeed -= (CurrentGravity * carWeight) * Time.deltaTime;
 		}
 
-		this.Player.Move (new Vector3 (0, verticalSpeed, 0));
+		this.Player.Move (new Vector3 (0, this.VerticalSpeed, 0));
 
 		if (transform.position.y < 0) // H4X0R DETECTED !!!!!!!!!
 			transform.position = this.StartingPosition; // Go back to your corner of shame

@@ -7,12 +7,11 @@ using System.Collections;
 public class CameraHandler : MonoBehaviour 
 {
 
-	/// <summary>
 	/// Do not change these
 	/// They handle camera offsets, and they are fine, for the moment.
 	/// </summary>
-	const int yOffsetMagicNumber = 5;
-	const int zOffsetMagicNumber = 20;
+	const int yOffsetMagicNumber = 25;
+	const int zOffsetMagicNumber = 35;
 
 	// Do not use this for initialization
 	private void Start () 
@@ -22,13 +21,29 @@ public class CameraHandler : MonoBehaviour
 	private void Update () 
 	{
 		// Get the player, is there any other way? This seems dumb and risky.
-		var player = transform.parent;
+		var player = GameObject.Find("NewPlayer");
 
-		//transform.position = new Vector3 (player.position.x, player.position.y + yOffsetMagicNumber, player.position.z - zOffsetMagicNumber);
+		transform.position = new Vector3 (player.transform.position.x, player.transform.position.y + yOffsetMagicNumber, player.transform.position.z + zOffsetMagicNumber);
+		transform.LookAt (player.transform.position);
 
-		//TODO: Add something in here?
-		//TODO: DO SOMETHING IN HERE
-		//TODO: HELP PLS
+		var heading = player.transform.position - transform.position;
+		var distance = heading.magnitude;
+		var direction = heading / distance;
+
+		Debug.DrawRay (transform.position, heading, Color.black);
+
+		var ray = new Ray (transform.position, heading);
+		var hit = new RaycastHit ();
+
+		if (Physics.Raycast (ray, out hit)) 
+		{
+			if (hit.collider.GetType() == typeof(UnityEngine.TerrainCollider))
+				transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+		}
+
+
+		//Debug.DrawLine (transform.position, player.transform.position - transform.position, Color.black);
+		//Debug.DrawRay (transform.position, (player.transform.position - transform.position).normalized, Color.red);
 	}
 
 }
