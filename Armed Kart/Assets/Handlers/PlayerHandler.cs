@@ -24,6 +24,7 @@ public class PlayerHandler : MonoBehaviour
 	/// </summary>
 	/// <value><c>true</c> if the car is colliding; otherwise, <c>false</c>.</value>
 	private bool IsColliding { get; set; }
+	private bool IsBraking { get; set; }
 
 	/// <summary>
 	/// List of checkpoints.
@@ -56,8 +57,7 @@ public class PlayerHandler : MonoBehaviour
 	public float CurrentRotation = 0f;
 
 	public Vector3 CurrentSpeed;
-
-	private float LastVelocity = 0f; // TODO: Remove this?
+	
 	private float CollideAngle = 0f;
 
 	private Stopwatch timer = new Stopwatch ();
@@ -71,6 +71,7 @@ public class PlayerHandler : MonoBehaviour
 	const int BRAKE_SPEED_DROP_FACTOR = 5;
 	const int FLAT_GROUND = 90; // flat ground collision angle
 	const int FULL_CIRCLE = 360;
+	const int PENALTY_DIVIDER = 14;
 
 	/// <summary>
 	/// Used to initialize the player
@@ -141,7 +142,7 @@ public class PlayerHandler : MonoBehaviour
 			// 1 is full, -1 is full
 
 			rot *= curMaxSpeed * 2;
-			rot -= (CurrentVelocity / 2f);
+			rot += (CurrentVelocity - (curMaxSpeed / 2f)) + (this.IsBraking ? (CurrentVelocity / 2) : 0); // this handles rotation speed
 			rot /= curMaxSpeed * 2;
 
 			this.CurrentRotation = rot;
@@ -199,9 +200,14 @@ public class PlayerHandler : MonoBehaviour
 			{
 				speedFactor = (speedFactors[1] * 2 / (acceleration / carWeight));
 			}
+			else if (this.CurrentVelocity < (curMaxSpeed - (curMaxSpeed / 4)))
+			{
+				speedFactor = speedFactors[0] * 2 / (acceleration / carWeight);
+			}
 			else if (this.CurrentVelocity < curMaxSpeed) // if current velocity is less than current max speed
 			{
-				speedFactor = speedFactors[0] * 2;
+				var penalty = speedFactors[0] / PENALTY_DIVIDER;
+				speedFactor = (speedFactors[0] * 2 / (acceleration / carWeight)) - penalty;
 			}
 
 			if (this.CurrentVelocity >= 100 && timer.IsRunning)
@@ -220,9 +226,14 @@ public class PlayerHandler : MonoBehaviour
 			{
 				speedFactor = speedFactors[1] / (acceleration / carWeight);
 			}
+			else if (this.CurrentVelocity < (curMaxSpeedNoThrust - (curMaxSpeedNoThrust / 4)))
+			{
+				speedFactor = speedFactors[0] / (acceleration / carWeight);
+			}
 			else if (this.CurrentVelocity < curMaxSpeedNoThrust)
 			{
-				speedFactor = speedFactors[0];
+				var penalty = speedFactors[0] / PENALTY_DIVIDER;
+				speedFactor = (speedFactors[0] / (acceleration / carWeight)) - penalty;
 			}
 		}
 		else
@@ -242,12 +253,15 @@ public class PlayerHandler : MonoBehaviour
 		// Handles the braking
 		if (Input.GetKey (KeyCode.S)) 
 		{
-			speedFactor -= this.CalculateBrakingSpeed();
+			this.IsBraking = true;
+
+			speedFactor -= this.CalculateBrakingSpeed ();
 
 			if (this.CurrentVelocity < 0) // reverse speed modifier
 				speedFactor += this.CurrentVelocity;
-
-		}
+		} 
+		else
+			this.IsBraking = false;
 
 		if (this.CurrentVelocity < -curMaxReverseSpeed)
 			speedFactor = 10; // we do not like magic numbers. replace this with something else.
@@ -268,7 +282,6 @@ public class PlayerHandler : MonoBehaviour
 		*/
 
 		this.CurrentVelocity += speedFactor;
-		this.LastVelocity = CurrentVelocity;
 
 		this.CurrentVelocity /= this.CalculateCurrentVelocityAccelerationModifier(curMaxSpeed);
 

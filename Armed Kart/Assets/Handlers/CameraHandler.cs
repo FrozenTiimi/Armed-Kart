@@ -13,6 +13,14 @@ public class CameraHandler : MonoBehaviour
 	const int yOffsetMagicNumber = 25;
 	const int zOffsetMagicNumber = 35;
 
+	const int yOffsetClose = 3;
+	const int zOffsetClose = 3;
+
+	private float yOffset = yOffsetMagicNumber;
+	private float zOffset = zOffsetMagicNumber;
+
+	private System.Diagnostics.Stopwatch Watch;
+
 	// Do not use this for initialization
 	private void Start () 
 	{ }
@@ -23,7 +31,7 @@ public class CameraHandler : MonoBehaviour
 		// Get the player, is there any other way? This seems dumb and risky.
 		var player = GameObject.Find("NewPlayer");
 
-		transform.position = new Vector3 (player.transform.position.x, player.transform.position.y + yOffsetMagicNumber, player.transform.position.z + zOffsetMagicNumber);
+		transform.position = new Vector3 (player.transform.position.x, player.transform.position.y + yOffset, player.transform.position.z + zOffset);
 		transform.LookAt (player.transform.position);
 
 		var heading = player.transform.position - transform.position;
@@ -37,8 +45,15 @@ public class CameraHandler : MonoBehaviour
 
 		if (Physics.Raycast (ray, out hit)) 
 		{
-			if (hit.collider.GetType() == typeof(UnityEngine.TerrainCollider))
-				transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+			if (hit.collider.GetType () == typeof(UnityEngine.TerrainCollider)) 
+			{
+				SlideIn (ref this.yOffset, ref this.zOffset);
+			} 
+			else 
+			{
+				if (!IsFar ())
+					SlideOut (ref this.yOffset, ref this.zOffset);
+			}
 		}
 
 
@@ -46,4 +61,34 @@ public class CameraHandler : MonoBehaviour
 		//Debug.DrawRay (transform.position, (player.transform.position - transform.position).normalized, Color.red);
 	}
 
+	private void SlideIn(ref float yPos, ref float zPos)
+	{
+		if (yOffset >= yOffsetClose + 2.5f)
+			yOffset -= 2.5f;
+
+		if (zOffset >= zOffsetClose + 2.5f)
+			zOffset -= 2.5f;
+
+		Watch = new System.Diagnostics.Stopwatch ();
+		Watch.Start ();
+	}
+
+	private void SlideOut(ref float yPos, ref float zPos)
+	{
+		if (Watch.ElapsedMilliseconds < 500 && Watch.IsRunning)
+			return;
+		else if (Watch.ElapsedMilliseconds >= 500 && Watch.IsRunning)
+			Watch.Stop ();
+
+		if (yOffset < yOffsetMagicNumber)
+			yOffset += 2.5f;
+		
+		if (zOffset < zOffsetMagicNumber)
+			zOffset += 2.5f;
+	}
+
+    private bool IsFar()
+    {
+		return (yOffset >= yOffsetMagicNumber && zOffset >= zOffsetMagicNumber);
+	}
 }
