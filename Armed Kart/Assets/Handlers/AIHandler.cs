@@ -8,21 +8,16 @@ public class AIHandler : MonoBehaviour
 {
 	private CharacterController Player { get; set; }
 
-	private Vector3 LastPosition { get; set; }
-	private bool MustMove { get; set; }
-
 	public CarTypes CarType;
 
 	// Use this for initialization
 	private void Start () 
 	{
-		this.MustMove = false;
 	}
 	
 	// Update is called once per frame
 	private void Update () 
 	{
-		//TODO: Make this happen! Currently, this is COMPLETELY RANDOM !!!
 		this.Player = GetComponent<CharacterController> ();
 
 		this.HandleAIRotation ();
@@ -75,6 +70,8 @@ public class AIHandler : MonoBehaviour
 		}
 
 		transform.LookAt (this.CurrentCheckpoint.transform.position);
+		//var model = transform.FindChild ("Model");
+		//model.rotation = Quaternion.Euler (model.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, model.transform.rotation.eulerAngles.z);
 
 		Debug.DrawRay (transform.position, (this.CurrentCheckpoint.transform.position - transform.position), Color.blue);
 	}

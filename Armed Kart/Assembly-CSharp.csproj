@@ -55,6 +55,7 @@
      <Compile Include="Assets\Handlers\GameStart.cs" />
      <Compile Include="Assets\Handlers\MainMenuButtonHandler.cs" />
      <Compile Include="Assets\Handlers\MinimapHandler.cs" />
+     <Compile Include="Assets\Handlers\MultiplayerHandler.cs" />
      <Compile Include="Assets\Handlers\PlayerHandler.cs" />
      <None Include="Assets\Standard Assets\Environment\Water\Water4\Shaders\FXWater4Simple.shader" />
      <None Include="Assets\Standard Assets\Environment\Water\Water\Shaders\FXWaterPro.shader" />
