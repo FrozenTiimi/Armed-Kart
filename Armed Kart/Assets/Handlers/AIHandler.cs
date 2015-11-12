@@ -69,11 +69,13 @@ public class AIHandler : MonoBehaviour
 			Debug.Log (this.CurrentCheckpoint.name);
 		}
 
-		transform.LookAt (this.CurrentCheckpoint.transform.position);
+		ArtificialLookAt (this.CurrentCheckpoint.transform.position);
 		//var model = transform.FindChild ("Model");
-		//model.rotation = Quaternion.Euler (model.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, model.transform.rotation.eulerAngles.z);
+		//transform.LookAt (this.CurrentCheckpoint.transform.position);
 
 		Debug.DrawRay (transform.position, (this.CurrentCheckpoint.transform.position - transform.position), Color.blue);
+		//Debug.DrawRay (transform.position, V
+
 	}
 
 	private void HandleAIMovement()
@@ -95,6 +97,30 @@ public class AIHandler : MonoBehaviour
 		}
 	}
 
+	private void ArtificialLookAt(Vector3 at)
+	{
+		var corner = 0f;
+		var cornerDegrees = 0f;
+
+		var heading = at - transform.position;
+		var length = heading.magnitude;
+		var xN = heading.x;
+		var zN = heading.z;
+
+		corner = Mathf.Tan (xN / zN);
+		cornerDegrees = corner * Mathf.Rad2Deg;
+
+		Debug.Log (cornerDegrees);
+
+		var rot = Quaternion.LookRotation (heading);
+		transform.rotation = rot;
+
+		if (corner > 0) 
+		{
+			transform.FindChild("Model").transform.Rotate(Vector3.back, corner);
+		}
+	}
+
 	private void OnCollisionEnter(Collision other)
 	{
 	}
@@ -102,5 +128,11 @@ public class AIHandler : MonoBehaviour
 	private void OnCollisionStay(Collision other)
 	{
 
+	}
+
+	private float RadToDeg(float value)
+	{
+		//return value;
+		return (value) / (Mathf.PI * 180);
 	}
 }
