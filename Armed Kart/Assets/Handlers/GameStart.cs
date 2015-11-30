@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 public class GameStart : MonoBehaviour 
 {
@@ -7,8 +9,8 @@ public class GameStart : MonoBehaviour
 	{
 		// Safety switch
 		//GameObject.FindGameObjectWithTag ("extracam").GetComponent<Camera> ().enabled = true;
-		GameObject.FindGameObjectWithTag ("Cam2").GetComponent<Camera> ().enabled = true;
-		GameObject.FindGameObjectWithTag ("Cam1").GetComponent<Camera> ().enabled = false;
+		GameObject.FindGameObjectWithTag ("Cam1").GetComponent<Camera> ().enabled = true;
+		GameObject.FindGameObjectWithTag ("Cam2").GetComponent<Camera> ().enabled = false;
 	}
 
 }

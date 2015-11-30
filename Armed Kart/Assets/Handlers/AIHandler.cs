@@ -110,7 +110,7 @@ public class AIHandler : MonoBehaviour
 		corner = Mathf.Tan (xN / zN);
 		cornerDegrees = corner * Mathf.Rad2Deg;
 
-		Debug.Log (cornerDegrees);
+		// SPAM!!! Debug.Log (cornerDegrees);
 
 		var rot = Quaternion.LookRotation (heading);
 		transform.rotation = rot;

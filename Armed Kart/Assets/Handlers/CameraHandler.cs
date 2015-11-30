@@ -29,7 +29,7 @@ public class CameraHandler : MonoBehaviour
 	private void Update () 
 	{
 		// Get the player, is there any other way? This seems dumb and risky.
-		var player = GameObject.Find("NewPlayer");
+		var player = GameObject.Find("Player");
 
 		transform.position = new Vector3 (player.transform.position.x, player.transform.position.y + yOffset, player.transform.position.z + zOffset);
 		transform.LookAt (player.transform.position);
