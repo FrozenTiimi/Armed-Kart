@@ -72,7 +72,7 @@ public class PlayerHandler : MonoBehaviour
 	 * Game constants
 	 */
 	const float COLLISION_SPEED_FACTOR = 2f;
-	const float REALISM_FACTOR = 3f; // used to divide the velocity of the car on-screen
+	const float REALISM_FACTOR = 2f; // used to divide the velocity of the car on-screen
 	const int SPEED_DROP_FACTOR = 2;
 	const int BRAKE_SPEED_DROP_FACTOR = 5;
 	const int FLAT_GROUND = 90; // flat ground collision angle

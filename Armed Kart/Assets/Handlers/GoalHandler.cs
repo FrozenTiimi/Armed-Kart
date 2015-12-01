@@ -43,27 +43,45 @@ public class GoalHandler : MonoBehaviour
 
 				if (timer.IsRunning)
 				{
-					timer.Stop ();
-
-					// Increment lap amount
-					if (!LapsDone.ContainsKey (other.name))
-						LapsDone.Add(other.name, 0);
-
-					LapsDone[other.name]++;
-
-					Debug.Log ("Lap Finished! Time for " + other.name + ": " + GetCurrentElapsedLapTime(other.name) + " seconds");
-
-					timer.Reset ();
-
-					if (LapsDone[other.name] >= NumberOfLaps)
+					var proceedLap = true;
+					for (int i = 0; i < transform.childCount; i++) 
 					{
-						other.transform.GetComponent<PlayerHandler>().FinishRace();
+						if (!transform.GetChild (i).GetComponent<CheckpointHandler>().CheckpointCheck)
+						{
+							proceedLap = false;
+							break;
+						}
+					}
+
+					if (proceedLap)
+					{
+						for (int i = 0; i < transform.childCount; i++) 
+						{
+							transform.GetChild (i).GetComponent<CheckpointHandler>().CheckpointCheck = false;
+						}
+
+						timer.Stop ();
+						
+						LapsDone[other.name]++;
+						
+						Debug.Log ("Lap Finished! Time for " + other.name + ": " + GetCurrentElapsedLapTime(other.name) + " seconds");
+						
+						timer.Reset ();
+						
+						if (LapsDone[other.name] > NumberOfLaps)
+						{
+							other.transform.GetComponent<PlayerHandler>().FinishRace();
+						}
+						else
+						{
+							timer.Start ();
+							
+							Debug.Log ("New lap started for player " + other.name + "!");
+						}
 					}
 					else
 					{
-						timer.Start ();
-						
-						Debug.Log ("New lap started for player " + other.name + "!");
+						Debug.Log ("Player " + other.name + " did not go through all the checkpoints!\nWhat a cheater!");
 					}
 				}
 				else
@@ -79,6 +97,11 @@ public class GoalHandler : MonoBehaviour
 				Timers.Add (other.name, new System.Diagnostics.Stopwatch());
 
 				Timers[other.name].Start ();
+
+				if (!LapsDone.ContainsKey (other.name))
+					LapsDone.Add(other.name, 0);
+				
+				LapsDone[other.name]++;
 
 				Debug.Log ("First lap started for player " + other.name + "!");
 			}
