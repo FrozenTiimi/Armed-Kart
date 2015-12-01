@@ -51,7 +51,7 @@ public class CameraHandler : MonoBehaviour
 			} 
 			else 
 			{
-				if (!IsFar ())
+				if (!IsFar () && !player.GetComponent<PlayerHandler>().GetHasFinishedRace())
 					SlideOut (ref this.yOffset, ref this.zOffset);
 			}
 		}

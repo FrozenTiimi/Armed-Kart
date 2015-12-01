@@ -12,7 +12,18 @@ using System.Threading;
 public class PlayerHandler : MonoBehaviour 
 {
 	private CharacterController Player { get; set; }
-	
+
+	/// <summary>
+	/// Set this to TRUE if you want, for example, the race to continue after you've finished all the laps
+	/// </summary>
+	public bool DebugMode = false;
+
+	/// <summary>
+	/// DO NOT >GET< THIS VALUE, ONLY >SET<
+	/// FOR GETTING, USE GetHasFinishedRace() function, which also takes into consideration the debug mode, etc.
+	/// </summary>
+	private bool HasFinishedRace = false;
+
 	/// <summary>
 	/// Gets or sets a value indicating whether the car is rotating.
 	/// </summary>
@@ -25,12 +36,7 @@ public class PlayerHandler : MonoBehaviour
 	/// <value><c>true</c> if the car is colliding; otherwise, <c>false</c>.</value>
 	private bool IsColliding { get; set; }
 	private bool IsBraking { get; set; }
-
-	/// <summary>
-	/// List of checkpoints.
-	/// </summary>
-	public List<GameObject> CheckPoints = new List<GameObject>();
-
+	
 	/*
 	 * The car's wheels
 	 */
@@ -73,6 +79,15 @@ public class PlayerHandler : MonoBehaviour
 	const int FULL_CIRCLE = 360;
 	const int PENALTY_DIVIDER = 14;
 
+	/// <summary>
+	/// Why is this here?
+	/// Because publics first.
+	/// </summary>
+	public void FinishRace()
+	{
+		this.HasFinishedRace = true;
+	}
+	
 	/// <summary>
 	/// Used to initialize the player
 	/// </summary>
@@ -145,6 +160,7 @@ public class PlayerHandler : MonoBehaviour
 			rot += (CurrentVelocity - (curMaxSpeed / 2f)) + (this.IsBraking ? (CurrentVelocity / 2) : 0); // this handles rotation speed
 			rot /= curMaxSpeed * 2;
 
+			rot *= 60;
 			this.CurrentRotation = rot;
 
 			if (this.CurrentVelocity > 1 || this.CurrentVelocity < -1)
@@ -152,7 +168,7 @@ public class PlayerHandler : MonoBehaviour
 				IsRotating = true;
 
 				//if (this.Player.isGrounded)
-				transform.Rotate(new Vector3(0, rot, 0));
+				transform.Rotate(new Vector3(0, rot * Time.deltaTime, 0));
 				//else
 					//transform.Rotate(new Vector3(0, rot, rot));
 			}
@@ -183,7 +199,7 @@ public class PlayerHandler : MonoBehaviour
 
 		var speedFactor = 0f;
 
-		if (Input.GetKey (KeyCode.W) && Input.GetKey (KeyCode.LeftShift)) // if shift + w is pressed
+		if (/*Input.GetKey (KeyCode.W) && */Input.GetKey (KeyCode.LeftShift) && !Input.GetKey (KeyCode.S) && !GetHasFinishedRace()) // if shift + w is pressed
 		{	
 
 			if (!timer.IsRunning && this.CurrentVelocity == 0)
@@ -216,7 +232,7 @@ public class PlayerHandler : MonoBehaviour
 				UnityEngine.Debug.Log ("We accelerated to 100km/h in " + timer.ElapsedMilliseconds + " ms");
 			}
 		}
-		else if (Input.GetKey (KeyCode.W)) // if not
+		else if (/*Input.GetKey (KeyCode.W) && */!GetHasFinishedRace() && !Input.GetKey (KeyCode.S)) // if not
 		{
 			if (this.CurrentVelocity > curMaxSpeedNoThrust)
 			{
@@ -251,7 +267,7 @@ public class PlayerHandler : MonoBehaviour
 		}
 
 		// Handles the braking
-		if (Input.GetKey (KeyCode.S)) 
+		if (Input.GetKey (KeyCode.S) && !GetHasFinishedRace()) 
 		{
 			this.IsBraking = true;
 
@@ -351,6 +367,14 @@ public class PlayerHandler : MonoBehaviour
 	public bool IsCarColliding()
 	{
 		return this.IsColliding;
+	}
+
+	public bool GetHasFinishedRace()
+	{
+		if (this.DebugMode)
+			return false;
+
+		return this.HasFinishedRace;
 	}
 
 	/// <summary>

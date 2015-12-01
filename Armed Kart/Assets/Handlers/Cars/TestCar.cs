@@ -18,5 +18,7 @@ public class TestCar : CarHandler
 		base.CarTurningSpeedFactor = 1.15f;
 
 		base.SpeedFactors = new float[2] { 5f, 10f };
+
+		base.ModelName = "car_model_Valtteri";
 	}
 }

@@ -49,7 +49,80 @@ public class GUIHandler : MonoBehaviour
 			GUI.Label (new Rect (0, 80, 200, 200), "\tColliding Angle: " + pHandler.GetCollidingAngle().ToString(), gS);
 		}
 
+		var raceFinishedStyle = new GUIStyle (gS);
+		raceFinishedStyle.fontSize = 65;
+		raceFinishedStyle.fontStyle = FontStyle.Bold;
+		raceFinishedStyle.normal.textColor = Color.green;
+
+		var gameTimeStyle = new GUIStyle(gS);
+		gameTimeStyle.fontSize = 42;
+		
+		var timeStyle = new GUIStyle(gS);
+		timeStyle.fontSize = 30;
+
+		var lapStyle = new GUIStyle(gS);
+		lapStyle.fontSize = 20;
+
+		var playerHandler = transform.parent.GetComponent<PlayerHandler> ();
+		var goalHandler = GameObject.FindGameObjectWithTag ("Goal").GetComponent<GoalHandler> ();
+		var gameStartHandler = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameStart> ();
+
+		var gameTimeMsecs = gameStartHandler.ElapsedGameTimeMsec ();
+		var fGameTimeMsecs = gameTimeMsecs / 1000f;
+
+		var msecs = goalHandler.GetCurrentElapsedLapTimeMsec (transform.parent.name);
+		var fMsecs = (msecs != -1 ? (msecs / 1000f) : 0.00);
+
+		var lapsDone = goalHandler.GetPlayerLapsDone (transform.parent.name);
+		lapsDone = (lapsDone < 0 ? 0 : lapsDone);
+
+		var gameTimeFloat = float.Parse (fGameTimeMsecs.ToString ("F2"));
+		var gameTimeMinutes = 0;
+
+		if (gameTimeFloat > 60)
+		{
+			gameTimeMinutes = Mathf.FloorToInt(gameTimeFloat / 60);
+			gameTimeFloat = gameTimeFloat % 60;
+		}
+
+		var gameTimeText = ((gameTimeMinutes > 0) ? gameTimeMinutes.ToString() + "m " : "") + gameTimeFloat.ToString("F2") + "s";
+		var timeText = fMsecs.ToString ("F2");
+		var lapText = "Current lap: " + lapsDone;
+		var raceFinishedText = "Race Finished!";
+
+		GUI.Label (new Rect (CenterScreenX (gameTimeText, gameTimeStyle), 10, GetTextWidth (gameTimeText, gameTimeStyle), 
+		                     gameTimeStyle.fontSize), gameTimeText, gameTimeStyle);
+		GUI.Label (new Rect (CenterScreenX(timeText, timeStyle), 10 + gameTimeStyle.fontSize + 5, GetTextWidth(timeText, timeStyle), 
+		                     timeStyle.fontSize), timeText, timeStyle);
+		GUI.Label (new Rect (CenterScreenX (lapText, lapStyle), 10 + gameTimeStyle.fontSize + timeStyle.fontSize + 5 + 5, 
+		                     GetTextWidth (lapText, lapStyle), lapStyle.fontSize), lapText, lapStyle);
+
+		if (playerHandler.GetHasFinishedRace ())
+			GUI.Label (new Rect (CenterScreenX (raceFinishedText, raceFinishedStyle), CenterScreenY (raceFinishedText, raceFinishedStyle),
+			                    GetTextWidth (raceFinishedText, raceFinishedStyle), raceFinishedStyle.fontSize),
+			           raceFinishedText, raceFinishedStyle);
+
 		// Draw the minimap
 		GUI.DrawTexture (new Rect (Screen.width - 200, Screen.height - 200, 175, 175), Minicam);
+	}
+
+	private float CenterScreenX(string text, GUIStyle style)
+	{
+		return (Screen.width / 2) - (GetTextWidth(text, style) / 2);
+	}
+
+	private float CenterScreenY(string text, GUIStyle style)
+	{
+		return (Screen.height / 2) - (GetTextHeight (text, style) / 2);
+	}
+
+	private float GetTextWidth(string text, GUIStyle style)
+	{
+		return style.CalcSize(new GUIContent(text)).x;
+	}
+
+	private float GetTextHeight(string text, GUIStyle style)
+	{
+		return style.CalcSize(new GUIContent(text)).y;
 	}
 }

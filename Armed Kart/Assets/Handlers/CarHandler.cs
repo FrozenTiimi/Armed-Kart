@@ -42,6 +42,13 @@ public abstract class CarHandler
 	/// </summary>
 	protected float[] SpeedFactors = new float[] { 0f, 0f };
 
+	protected string ModelName = string.Empty;
+
+	public string ModelLocation 
+	{
+		get { return "/Models/" + ModelName; }
+	}
+
 	/// <summary>
 	/// Gets the car's max speed
 	/// </summary>
