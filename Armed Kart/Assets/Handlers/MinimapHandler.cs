@@ -51,7 +51,7 @@ public class MinimapHandler : MonoBehaviour
 		}
 
 		// this seems dumb
-		var player = GameObject.FindGameObjectWithTag("Player");
+		var player = Camera.allCameras.Where (t => t.enabled).ToList ()[0].transform.parent;
 
 		if (this.FollowingMinimap)
 			transform.position = new Vector3 (player.transform.position.x, 430, player.transform.position.z);
