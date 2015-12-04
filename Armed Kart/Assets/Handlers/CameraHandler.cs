@@ -13,8 +13,8 @@ public class CameraHandler : MonoBehaviour
 	const int yOffsetMagicNumber = 25;
 	const int zOffsetMagicNumber = 35;
 
-	const int yOffsetClose = 3;
-	const int zOffsetClose = 3;
+	const int yOffsetClose = 5;
+	const int zOffsetClose = 5;
 
 	private float yOffset = yOffsetMagicNumber;
 	private float zOffset = zOffsetMagicNumber;

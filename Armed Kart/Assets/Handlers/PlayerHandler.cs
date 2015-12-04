@@ -154,12 +154,18 @@ public class PlayerHandler : MonoBehaviour
 		{
 			var rot = Input.GetAxis("Horizontal");
 
-			// 1 is full, -1 is full
+			//Jannen driftaus juttuja
+			if (Input.GetKey (KeyCode.Space))
+			{
+				rot *= 1.5f;
+			}
 
+
+			// 1 is full, -1 is full
 			rot *= curMaxSpeed * 2;
 			rot += (CurrentVelocity - (curMaxSpeed / 2f)) + (this.IsBraking ? (CurrentVelocity / 2) : 0); // this handles rotation speed
 			rot /= curMaxSpeed * 2;
-
+			
 			rot *= 60;
 			this.CurrentRotation = rot;
 
@@ -177,6 +183,7 @@ public class PlayerHandler : MonoBehaviour
 				IsRotating = false;
 			}
 		}
+
 		else
 			IsRotating = false;
 	}
@@ -278,6 +285,19 @@ public class PlayerHandler : MonoBehaviour
 		} 
 		else
 			this.IsBraking = false;
+
+		/*if (Input.GetKey (KeyCode.Space) && !GetHasFinishedRace ()) 
+		{
+			bool isDrifting;
+
+			float rotatingAngle = 0;
+			speedFactor = -1;
+
+			if (Input.GetAxis("Horizontal") > rotatingAngle)
+			{
+				
+			}
+		}*/
 
 		if (this.CurrentVelocity < -curMaxReverseSpeed)
 			speedFactor = 10; // we do not like magic numbers. replace this with something else.

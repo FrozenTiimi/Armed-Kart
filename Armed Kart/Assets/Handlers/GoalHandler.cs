@@ -51,19 +51,42 @@ public class GoalHandler : MonoBehaviour
 
 					LapsDone[other.name]++;
 
-					Debug.Log ("Lap Finished! Time for " + other.name + ": " + GetCurrentElapsedLapTime(other.name) + " seconds");
+					var hasGoneThroughAllCheckpoints = true;
 
-					timer.Reset ();
-
-					if (LapsDone[other.name] >= NumberOfLaps)
+					for (var i = 0; i < transform.childCount; i++)
 					{
-						other.transform.GetComponent<PlayerHandler>().FinishRace();
+						if (!transform.GetChild (i).GetComponent<CheckpointHandler>().GetHasTriggeredCheckpoint(other.name))
+						{
+							hasGoneThroughAllCheckpoints = false;
+							break;
+						}
+					}
+
+					if (!hasGoneThroughAllCheckpoints)
+					{
+						Debug.Log(string.Format ("Player {0} has not gone through all the checkpoints!\nWhat a cheater!", other.name));
 					}
 					else
 					{
-						timer.Start ();
+						for (var i = 0; i < transform.childCount; i++)
+						{
+							transform.GetChild (i).GetComponent<CheckpointHandler>().RemovePlayerFromList(other.name);
+						}
+
+						Debug.Log ("Lap Finished! Time for " + other.name + ": " + GetCurrentElapsedLapTime(other.name) + " seconds");
 						
-						Debug.Log ("New lap started for player " + other.name + "!");
+						timer.Reset ();
+						
+						if (LapsDone[other.name] >= NumberOfLaps)
+						{
+							other.transform.GetComponent<PlayerHandler>().FinishRace();
+						}
+						else
+						{
+							timer.Start ();
+							
+							Debug.Log ("New lap started for player " + other.name + "!");
+						}
 					}
 				}
 				else

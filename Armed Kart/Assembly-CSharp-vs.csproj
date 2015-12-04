@@ -52,6 +52,7 @@
      <Compile Include="Assets\Handlers\CameraHandler.cs" />
      <Compile Include="Assets\Handlers\CarHandler.cs" />
      <Compile Include="Assets\Handlers\Cars\TestCar.cs" />
+     <Compile Include="Assets\Handlers\CheckpointHandler.cs" />
      <Compile Include="Assets\Handlers\GUIHandler.cs" />
      <Compile Include="Assets\Handlers\GameStart.cs" />
      <Compile Include="Assets\Handlers\GoalHandler.cs" />
