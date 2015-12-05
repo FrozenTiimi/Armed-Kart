@@ -10,11 +10,11 @@ public class CameraHandler : MonoBehaviour
 	/// Do not change these
 	/// They handle camera offsets, and they are fine, for the moment.
 	/// </summary>
-	const int yOffsetMagicNumber = 25;
-	const int zOffsetMagicNumber = 35;
+	const int yOffsetMagicNumber = 100;
+	const int zOffsetMagicNumber = 140;
 
-	const int yOffsetClose = 5;
-	const int zOffsetClose = 5;
+	const int yOffsetClose = 30;
+	const int zOffsetClose = 30;
 
 	private float yOffset = yOffsetMagicNumber;
 	private float zOffset = zOffsetMagicNumber;

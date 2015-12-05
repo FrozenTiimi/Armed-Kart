@@ -34,7 +34,7 @@ public class BasicEntityHandler : MonoBehaviour
 	// Update is called once per frame
 	private void Update () 
 	{
-		this.Player = GetComponent<CharacterController> ();
+		//this.Player = GetComponent<CharacterController> ();
 
 		var carWeight = 2f; // default;
 
@@ -47,6 +47,7 @@ public class BasicEntityHandler : MonoBehaviour
 		this.VerticalSpeed = 0;
 
 		// IMPROVED GRAVITY
+		/*
 		if (this.Player.isGrounded)
 		{
 			if (CurrentGravity > 0)
@@ -61,10 +62,11 @@ public class BasicEntityHandler : MonoBehaviour
 			
 			this.VerticalSpeed -= (CurrentGravity * carWeight) * Time.deltaTime;
 		}
+		*/
 
-		this.Player.Move (new Vector3 (0, this.VerticalSpeed, 0));
+		//this.Player.Move (new Vector3 (0, this.VerticalSpeed, 0));
 
-		if (transform.position.y < 0) // H4X0R DETECTED !!!!!!!!!
+		if (transform.position.y < -100) // H4X0R DETECTED !!!!!!!!!
 			transform.position = this.StartingPosition; // Go back to your corner of shame
 	}
 
@@ -83,6 +85,7 @@ public class BasicEntityHandler : MonoBehaviour
 
 	private void OnCollisionStay(Collision other)
 	{
-		Debug.Log ("Collision !!!!" + other.collider.name);
+		if (other.collider.name != "Level")
+			Debug.Log ("Collision !!!! " + other.collider.name);
 	}
 }
