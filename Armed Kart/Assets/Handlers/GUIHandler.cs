@@ -2,6 +2,8 @@
 using System.Threading;
 using System.Collections;
 
+using ArmedKart.Utilities;
+
 public class GUIHandler : MonoBehaviour 
 {
 	/// <summary>
@@ -12,11 +14,17 @@ public class GUIHandler : MonoBehaviour
 	private PlayerHandler pHandler { get { return transform.parent.GetComponent<PlayerHandler>(); } }
 
 	private bool ShowDebugGUI { get; set; }
+	private bool RaceFinishedScreenShown { get; set; }
+	private bool StopShowingRaceFinishedTexts { get; set; }
+
 	private float CurrentFPS { get; set; }
 	private long CurrentVertices { get; set; }
 
 	private void Start()
 	{
+		this.RaceFinishedScreenShown = false;
+		this.StopShowingRaceFinishedTexts = false;
+
 		this.CurrentVertices = -1;
 	}
 
@@ -90,20 +98,43 @@ public class GUIHandler : MonoBehaviour
 		var lapText = "Current lap: " + lapsDone;
 		var raceFinishedText = "Race Finished!";
 
-		GUI.Label (new Rect (CenterScreenX (gameTimeText, gameTimeStyle), 10, GetTextWidth (gameTimeText, gameTimeStyle), 
-		                     gameTimeStyle.fontSize), gameTimeText, gameTimeStyle);
-		GUI.Label (new Rect (CenterScreenX(timeText, timeStyle), 10 + gameTimeStyle.fontSize + 5, GetTextWidth(timeText, timeStyle), 
-		                     timeStyle.fontSize), timeText, timeStyle);
-		GUI.Label (new Rect (CenterScreenX (lapText, lapStyle), 10 + gameTimeStyle.fontSize + timeStyle.fontSize + 5 + 5, 
-		                     GetTextWidth (lapText, lapStyle), lapStyle.fontSize), lapText, lapStyle);
+		if (!StopShowingRaceFinishedTexts) 
+		{
+			GUI.Label (new Rect (CenterScreenX (gameTimeText, gameTimeStyle), 10, GetTextWidth (gameTimeText, gameTimeStyle), 
+			                     gameTimeStyle.fontSize), gameTimeText, gameTimeStyle);
+			GUI.Label (new Rect (CenterScreenX(timeText, timeStyle), 10 + gameTimeStyle.fontSize + 5, GetTextWidth(timeText, timeStyle), 
+			                     timeStyle.fontSize), timeText, timeStyle);
+			GUI.Label (new Rect (CenterScreenX (lapText, lapStyle), 10 + gameTimeStyle.fontSize + timeStyle.fontSize + 5 + 5, 
+			                     GetTextWidth (lapText, lapStyle), lapStyle.fontSize), lapText, lapStyle);
+		}
 
-		if (playerHandler.GetHasFinishedRace ())
-			GUI.Label (new Rect (CenterScreenX (raceFinishedText, raceFinishedStyle), CenterScreenY (raceFinishedText, raceFinishedStyle),
-			                    GetTextWidth (raceFinishedText, raceFinishedStyle), raceFinishedStyle.fontSize),
-			           raceFinishedText, raceFinishedStyle);
+		if (playerHandler.GetHasFinishedRace ()) 
+		{
+			if (!StopShowingRaceFinishedTexts)
+			{
+				GUI.Label (new Rect (CenterScreenX (raceFinishedText, raceFinishedStyle), CenterScreenY (raceFinishedText, raceFinishedStyle),
+				                     GetTextWidth (raceFinishedText, raceFinishedStyle), raceFinishedStyle.fontSize),
+				           raceFinishedText, raceFinishedStyle);
+			}
+			
+			if (!RaceFinishedScreenShown)
+			{
+				this.RaceFinishedScreenShown = true;
+
+				Invoke ("ShowRaceFinishedScreen", 2);
+			}
+		}
 
 		// Draw the minimap
 		GUI.DrawTexture (new Rect (Screen.width - 200, Screen.height - 200, 175, 175), Minicam);
+	}
+
+	private void ShowRaceFinishedScreen()
+	{
+		this.StopShowingRaceFinishedTexts = true;
+
+		var rCanvas = GameObject.FindGameObjectWithTag("RaceCanvas").GetComponent<Canvas>();
+		rCanvas.enabled = true;
 	}
 
 	private float CenterScreenX(string text, GUIStyle style)

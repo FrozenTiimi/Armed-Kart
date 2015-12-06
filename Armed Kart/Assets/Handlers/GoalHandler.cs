@@ -37,6 +37,8 @@ public class GoalHandler : MonoBehaviour
 	{
 		if (other.name.ToLower ().Contains ("player")) 
 		{
+			var hasGoneThroughAllCheckpoints = true;
+
 			if (Timers.ContainsKey(other.name))
 			{
 				var timer = Timers[other.name];
@@ -50,8 +52,6 @@ public class GoalHandler : MonoBehaviour
 						LapsDone.Add(other.name, 0);
 
 					LapsDone[other.name]++;
-
-					var hasGoneThroughAllCheckpoints = true;
 
 					for (var i = 0; i < transform.childCount; i++)
 					{
@@ -91,10 +91,26 @@ public class GoalHandler : MonoBehaviour
 				}
 				else
 				{
-					timer.Reset ();
-					timer.Start();
+					for (var i = 0; i < transform.childCount; i++)
+					{
+						if (!transform.GetChild (i).GetComponent<CheckpointHandler>().GetHasTriggeredCheckpoint(other.name))
+						{
+							hasGoneThroughAllCheckpoints = false;
+							break;
+						}
+					}
 
-					Debug.Log ("New lap started for player " + other.name + "!");
+					if (!hasGoneThroughAllCheckpoints)
+					{
+						Debug.Log(string.Format ("Player {0} has not gone through all the checkpoints!\nWhat a cheater!", other.name));
+					}
+					else
+					{
+						timer.Reset ();
+						timer.Start();
+						
+						Debug.Log ("New lap started for player " + other.name + "!");
+					}
 				}
 			}
 			else

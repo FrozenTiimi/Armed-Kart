@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using System.Linq;
 
 using ArmedKart.Utilities;
 
@@ -17,7 +18,10 @@ public class PlayerHandler : MonoBehaviour
 	/// Gets or sets the player's character controller.
 	/// </summary>
 	/// <value>The player (character controller).</value>
-	private CharacterController Player { get; set; }
+	private Rigidbody Player { get; set; }
+	private GameObject PlayerMinimap { get; set; }
+	private MinimapHandler PlayerMinimapHandler { get; set; }
+	private GameObject PlayerCamera { get; set; }
 
 	/// <summary>
 	/// Set this to TRUE if you want, for example, the race to continue after you've finished all the laps
@@ -111,19 +115,21 @@ public class PlayerHandler : MonoBehaviour
 	const float ROTATION_FACTOR = 3f;
 	const float FORCE_MULTIPLIER = 7f; // May the Force be with you
 	const float REVERSE_FORCE_MULTIPLIER = 20f; // May the... reverse Force...? be with you
-	const float GRAVITY_MULTIPLIER = -500f; // Used to calculate the intensity of gravity
+	const float GRAVITY_MULTIPLIER = -1000f; // Used to calculate the intensity of gravity
 	const float DRIFTING_SPEED_DROP_FACTOR = 6f; // Used to make the drifting more realistic
+	const float SPEED_PENALTY = 10f; // Used to calculate the new speed factor if velocity is too low or high, 
+									 // disables the "Big Rigs" style of reverse movement for example
 
 	/// <summary>
 	/// The rotation multiplier.
 	/// Handles the rotation speed.
-	/// </summary>
+	/// </summary>     
 	const int ROTATION_MULTIPLIER = 60;
-	const int SPEED_DROP_FACTOR = 2;
+	const int SPEED_DROP_FACTOR = 2;    
 	const float BRAKE_SPEED_DROP_FACTOR = 5f;
 	const int FLAT_GROUND = 90; // flat ground collision angle
 	const int FULL_CIRCLE = 360;
-	const int PENALTY_DIVIDER = 14;
+	const int PENALTY_DIVIDER = 14;  
 
 	/// <summary>
 	/// Why is this here?
@@ -155,11 +161,22 @@ public class PlayerHandler : MonoBehaviour
 	/// </summary>
 	private void Update ()
 	{
-		//this.Player = GetComponent<CharacterController> ();
-		//this.Player.enabled = false; // FUCKING STOP DETECTING THE FUCKING COLLISIONS YOU FUCKING ASSHOLE FUCK!!!!
+		/*
+		 * THIS IS FOR JANNE:
+		 * Where(Action)-funktio looppaa arrayn läpi, jonka tuo FindGameObjectsWithTag(string)-funktio saa,
+		 * ja palauttaa jokaisen objektin sieltä arraysta, jonka esim. noissa tapauksissa ForPlayer on yhtäsuuri kuin transform.name
+		 * ja FirstOrDefault() ottaa joko ensimmäisen itemin Where(Action)-funktion palauttamasta arraysta, tai jos ei itemejä ole, palauttaa defaulttiarvon.
+		 */ 
 
-		this.IsDrifting = this.CurrentVelocity > this.PlayerCar.GetMaxSpeed () * 0.75;
+		this.Player = GetComponent<Rigidbody> ();
+		this.PlayerMinimap = GameObject.FindGameObjectsWithTag ("Minicamera").Where (t => t.GetComponent<MinimapHandler> ().ForPlayer == transform.name).FirstOrDefault();
+		this.PlayerMinimapHandler = this.PlayerMinimap.GetComponent<MinimapHandler> ();
+		this.PlayerCamera = GameObject.FindGameObjectsWithTag ("PlayerCamera").Where (t => t.GetComponent<CameraHandler> ().AttachedPlayer == transform.name).FirstOrDefault ();
 
+		this.PlayerCamera.GetComponent<Camera> ().enabled = true;
+
+		this.HandlePlayerMinimap ();
+		this.HandlePlayerDrifting ();
 		this.HandlePlayerRotation ();
 		this.HandlePlayerMovement ();
 	}
@@ -170,6 +187,28 @@ public class PlayerHandler : MonoBehaviour
 	private void LateUpdate()
 	{
 		transform.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+
+	}
+
+	private void HandlePlayerDrifting()
+	{
+		this.IsDrifting = this.CurrentVelocity > this.PlayerCar.GetMaxSpeed () * 0.75;
+	}
+
+	private void HandlePlayerMinimap()
+	{
+		if (Input.GetKeyDown (KeyCode.F2) && Input.GetKey (KeyCode.LeftShift)) 
+		{
+			this.PlayerMinimapHandler.ZoomIn();
+		} 
+		else if (Input.GetKeyDown (KeyCode.F2) && Input.GetKey (KeyCode.LeftControl)) 
+		{
+			this.PlayerMinimapHandler.ZoomOut();
+		}
+		else if (Input.GetKeyDown (KeyCode.F2)) 
+		{
+			this.PlayerMinimapHandler.SwitchFollowingMinimap();
+		}
 	}
 
 	/// <summary>
@@ -194,9 +233,7 @@ public class PlayerHandler : MonoBehaviour
 
 			// Jerpan driftaus juttuja
 			if (this.IsDrifting)
-				rot *= 1.5f;
-
-			UnityEngine.Debug.Log (Time.deltaTime);
+				rot *= 2.5f;
 
 			this.CurrentRotation = rot;
 
@@ -207,7 +244,7 @@ public class PlayerHandler : MonoBehaviour
 				//if (this.Player.isGrounded)
 				//transform.Rotate(new Vector3(0, rot * Time.deltaTime, 0));
 				//var deltaRotation = Quaternion.AngleAxis(rot, transform.right) * Quaternion.AngleAxis(rot, transform.up);
-				transform.GetComponent<Rigidbody>().MoveRotation(Quaternion.Euler (transform.GetComponent<Rigidbody>().rotation.eulerAngles) * Quaternion.Euler (0, rot * Time.deltaTime, 0));
+				this.Player.MoveRotation(Quaternion.Euler (transform.GetComponent<Rigidbody>().rotation.eulerAngles) * Quaternion.Euler (0, rot * Time.deltaTime, 0));
 				//else
 					//transform.Rotate(new Vector3(0, rot, rot));
 			}
@@ -328,19 +365,6 @@ public class PlayerHandler : MonoBehaviour
 		else
 			this.IsBraking = false;
 
-		/*if (Input.GetKey (KeyCode.Space) && !GetHasFinishedRace ()) 
-		{
-			bool isDrifting;
-
-			float rotatingAngle = 0;
-			speedFactor = -1;
-
-			if (Input.GetAxis("Horizontal") > rotatingAngle)
-			{
-				
-			}
-		}*/
-
 		if (IsRotating)
 			speedFactor /= turnSpeedFactor;
 
@@ -348,9 +372,9 @@ public class PlayerHandler : MonoBehaviour
 			speedFactor = MathUtils.Flip (speedFactor) / DRIFTING_SPEED_DROP_FACTOR;
 
 		if (this.CurrentVelocity < -curMaxReverseSpeed)
-			speedFactor = 10; //TODO: we do not like magic numbers. replace this with something else.
+			speedFactor = SPEED_PENALTY;
 		else if (this.CurrentVelocity > this.PlayerCar.GetMaxSpeed ())
-			speedFactor = -10; //TODO: WE... DO... NOT... LIKE... MAGIC... NUMBERS!!!!!!
+			speedFactor = -SPEED_PENALTY;
 
 		/*
 		 * COLLISION IS BROKEN AS OF 5.11.2015
@@ -369,7 +393,7 @@ public class PlayerHandler : MonoBehaviour
 		this.CurrentVelocity /= this.CalculateCurrentVelocityAccelerationModifier(curMaxSpeed);
 
 		var zModifier = MathUtils.Flip (this.SetVelocityRealistic (this.CurrentVelocity.Round ())); // we flip the current velocity and make it realistic
-		var speed = new Vector3 (0, (9.81f * GRAVITY_MULTIPLIER) * this.PlayerCar.GetCarWeight(), zModifier);
+		var speed = new Vector3 (0, (transform.GetComponent<BasicEntityHandler>().GetIsGrounded() ? 0 : (9.81f * GRAVITY_MULTIPLIER) * this.PlayerCar.GetCarWeight()), zModifier);
 		speed = transform.rotation * speed; // we times the speed by the rotation quaternion to make the car actually move in the right direction
 
 		this.CurrentSpeed = speed;
@@ -381,15 +405,15 @@ public class PlayerHandler : MonoBehaviour
 
 		// Loop through them
 		wheels.ForEach (w =>
-		{
+		                {
 			//TODO: Fix this!!!!!!! THE SECOND PARAMETER IS THE, UHM... a
 			//		YOU KNOW... WHEN YOU TURN THE CAR... ROTATION... THINGY... I HOPE YOU KNOW
 			w.transform.Rotate (new Vector3(0, 0, this.CurrentVelocity));
 		});
 
-		transform.GetComponent<Rigidbody> ().velocity = speed;
-		var rotQuaternion = transform.GetComponent<Rigidbody>().rotation * Vector3.forward;
-		transform.GetComponent<Rigidbody> ().AddForce (rotQuaternion * (this.CurrentVelocity < 0 ? 
+		this.Player.velocity = speed;
+		var rotQuaternion = this.Player.rotation * Vector3.forward;
+		this.Player.AddForce (rotQuaternion * (this.CurrentVelocity < 0 ? 
 		                                                                MathUtils.Flip (this.CurrentVelocity) * REVERSE_FORCE_MULTIPLIER : 
 		                                                                (-this.CurrentVelocity * FORCE_MULTIPLIER)));
 

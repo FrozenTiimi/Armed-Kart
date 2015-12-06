@@ -16,6 +16,8 @@ public class CameraHandler : MonoBehaviour
 	const int yOffsetClose = 30;
 	const int zOffsetClose = 30;
 
+	public string AttachedPlayer;
+
 	private float yOffset = yOffsetMagicNumber;
 	private float zOffset = zOffsetMagicNumber;
 
@@ -29,7 +31,7 @@ public class CameraHandler : MonoBehaviour
 	private void Update () 
 	{
 		// Get the player, is there any other way? This seems dumb and risky.
-		var player = GameObject.Find("Player");
+		var player = GameObject.Find(AttachedPlayer);
 
 		transform.position = new Vector3 (player.transform.position.x, player.transform.position.y + yOffset, player.transform.position.z + zOffset);
 		transform.LookAt (player.transform.position);

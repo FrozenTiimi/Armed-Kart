@@ -3,7 +3,7 @@ using System.Collections;
 
 /// <summary>
 /// This is the base-entity handler for all entities. 
-/// PLEASE INHERIT THIS TO ALL ENTITY HANDLING CLASSES
+/// Please add this to all entities
 /// </summary>
 public class BasicEntityHandler : MonoBehaviour 
 {
@@ -12,7 +12,7 @@ public class BasicEntityHandler : MonoBehaviour
 	/// Gets or sets the charactercontroller (player)
 	/// </summary>
 	/// <value>The player.</value>
-	private CharacterController Player { get; set; }
+	private Rigidbody Player { get; set; }
 
 	private Vector3 StartingPosition { get; set; }
 
@@ -25,16 +25,19 @@ public class BasicEntityHandler : MonoBehaviour
 	private float CurrentGravity = 0f;
 	private float VerticalSpeed = 0f;
 
+	private bool IsGrounded { get; set; }
+
 	// Use this for initialization
 	private void Start () 
 	{
+		this.IsGrounded = false;
 		this.StartingPosition = transform.position;
 	}
 	
 	// Update is called once per frame
 	private void Update () 
 	{
-		//this.Player = GetComponent<CharacterController> ();
+		this.Player = GetComponent<Rigidbody> ();
 
 		var carWeight = 2f; // default;
 
@@ -66,8 +69,20 @@ public class BasicEntityHandler : MonoBehaviour
 
 		//this.Player.Move (new Vector3 (0, this.VerticalSpeed, 0));
 
+		this.IsGrounded = this.DetectOnGround ();
+
 		if (transform.position.y < -100) // H4X0R DETECTED !!!!!!!!!
 			transform.position = this.StartingPosition; // Go back to your corner of shame
+	}
+
+	private bool DetectOnGround()
+	{
+		Debug.DrawRay (this.Player.position, Vector3.down, Color.green);
+		
+		var raycastRay = new Ray (this.Player.position, Vector3.down);
+		var raycastHitInfo = new RaycastHit();
+		
+		return !Physics.Raycast (raycastRay, out raycastHitInfo);
 	}
 
 	private void LateUpdate()
@@ -80,12 +95,24 @@ public class BasicEntityHandler : MonoBehaviour
 
 	private void OnCollisionEnter(Collision other)
 	{
-		Debug.Log ("Collision enter !!!!" + other.collider.name);
+		//if (other.collider.name == "Level")
+		//	this.IsGrounded = true;
 	}
 
 	private void OnCollisionStay(Collision other)
 	{
 		if (other.collider.name != "Level")
 			Debug.Log ("Collision !!!! " + other.collider.name);
+	}
+
+	private void OnCollisionExit(Collision other)
+	{
+		//if (other.collider.name == "Level")
+		//	this.IsGrounded = false;
+	}
+
+	public bool GetIsGrounded()
+	{
+		return this.IsGrounded;
 	}
 }
