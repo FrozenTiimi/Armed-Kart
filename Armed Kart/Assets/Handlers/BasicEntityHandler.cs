@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// This is the base-entity handler for all entities. 
@@ -76,11 +78,38 @@ public class BasicEntityHandler : MonoBehaviour
 	private bool DetectOnGround()
 	{
 		Debug.DrawRay (this.Player.position, Vector3.down, Color.green);
+
+		var wheelRays = new List<bool> ();
+
+		for (var i = 0; i < this.Player.gameObject.transform.childCount; i++) 
+		{
+			var child = this.Player.gameObject.transform.GetChild(i);
+			if (child.name.Contains("wheel"))
+			{
+				//Debug.Log (this.Player.gameObject.transform.GetChild(i).name);
+				Debug.DrawRay (child.position, Vector3.down, Color.red);
+
+				var raycastRay = new Ray (this.Player.position, Vector3.down);
+				var raycastHitInfo = new RaycastHit();
+
+				wheelRays.Add (!Physics.Raycast(raycastRay, out raycastHitInfo));
+
+				if (Physics.Raycast(raycastRay, out raycastHitInfo))
+				{
+					Debug.Log (raycastHitInfo.collider.name);
+					Debug.Log (raycastHitInfo.distance);
+				}
+			}
+		}
+
+		var raycastRay2 = new Ray (this.Player.position, Vector3.down);
+		var raycastHitInfo2 = new RaycastHit();
+
+		wheelRays.Add (!Physics.Raycast (raycastRay2, out raycastHitInfo2));
 		
-		var raycastRay = new Ray (this.Player.position, Vector3.down);
-		var raycastHitInfo = new RaycastHit();
+		Debug.Log (wheelRays.Contains (true));
 		
-		return !Physics.Raycast (raycastRay, out raycastHitInfo);
+		return wheelRays.Contains(true);
 	}
 
 	private void LateUpdate()
