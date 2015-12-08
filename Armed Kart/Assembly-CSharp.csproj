@@ -60,6 +60,7 @@
      <Compile Include="Assets\Handlers\MinimapHandler.cs" />
      <Compile Include="Assets\Handlers\MultiplayerHandler.cs" />
      <Compile Include="Assets\Handlers\PlayerHandler.cs" />
+     <Compile Include="Assets\Handlers\RaceCanvasButtonHandler.cs" />
      <Compile Include="Assets\Handlers\Utilities\ExtensionUtils.cs" />
      <Compile Include="Assets\Handlers\Utilities\MathUtils.cs" />
      <None Include="Assets\Standard Assets\Environment\Water\Water4\Shaders\FXWater4Simple.shader" />

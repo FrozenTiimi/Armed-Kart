@@ -44,14 +44,61 @@ namespace ArmedKart.Utilities
 			return (float)System.Math.Round((decimal)source, 4);
 		}
 
+		/// <summary>
+		/// Gets the value to radians
+		/// </summary>
+		/// <returns>The radians.</returns>
+		/// <param name="degrees">Degrees.</param>
 		public static float InRadians(this float degrees)
 		{
 			return degrees * Mathf.Deg2Rad;
 		}
 
+		/// <summary>
+		/// Gets the value in degrees
+		/// </summary>
+		/// <returns>The degrees.</returns>
+		/// <param name="radians">Radians.</param>
 		public static float InDegrees(this float radians)
 		{
 			return radians * Mathf.Rad2Deg;
+		}
+
+		/// <summary>
+		/// Multiply the specified value by 2.
+		/// </summary>
+		/// <param name="value">Value.</param>
+		public static float Multiply(this float value)
+		{
+			return value.Multiply (2f);
+		}
+
+		/// <summary>
+		/// Multiply the specified value by given by-parameter.
+		/// </summary>
+		/// <param name="value">Value.</param>
+		/// <param name="by">By.</param>
+		public static float Multiply(this float value, float by)
+		{
+			return value * by;
+		}
+
+		/// <summary>
+		/// Half the specified value.
+		/// </summary>
+		/// <param name="value">Value.</param>
+		public static float Half(this float value)
+		{
+			return value / 2;
+		}
+
+		/// <summary>
+		/// Quarter the specified value.
+		/// </summary>
+		/// <param name="value">Value.</param>
+		public static float Quarter(this float value)
+		{
+			return value / 4;
 		}
 	}
 }

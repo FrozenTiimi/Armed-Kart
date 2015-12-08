@@ -43,11 +43,9 @@ public class BasicEntityHandler : MonoBehaviour
 
 		if (GetComponent <PlayerHandler>() ?? null) // checks if PlayerHandler is not found
 		{
-			carWeight = GetComponent<PlayerHandler> ().PlayerCar.GetCarWeight ();
+			this.Player.mass = carWeight = GetComponent<PlayerHandler> ().PlayerCar.GetCarWeight ();
 			carWeight += 1f;
 		} 
-
-		this.VerticalSpeed = 0;
 
 		// IMPROVED GRAVITY
 		/*

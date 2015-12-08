@@ -241,18 +241,11 @@ public class PlayerHandler : MonoBehaviour
 			{
 				IsRotating = true;
 
-				//if (this.Player.isGrounded)
-				//transform.Rotate(new Vector3(0, rot * Time.deltaTime, 0));
-				//var deltaRotation = Quaternion.AngleAxis(rot, transform.right) * Quaternion.AngleAxis(rot, transform.up);
 				this.Player.MoveRotation(Quaternion.Euler (transform.GetComponent<Rigidbody>().rotation.eulerAngles) * Quaternion.Euler (0, rot * Time.deltaTime, 0));
-				//else
-					//transform.Rotate(new Vector3(0, rot, rot));
 			}
 			else
 			{
 				IsRotating = false;
-
-				//transform.GetComponent<Rigidbody>().MoveRotation(0);
 			}
 		}
 
@@ -281,7 +274,7 @@ public class PlayerHandler : MonoBehaviour
 		if (/*Input.GetKey (KeyCode.W) && */Input.GetKey (KeyCode.LeftShift) && !Input.GetKey (KeyCode.S) && !GetHasFinishedRace()) // if shift + w is pressed
 		{	
 
-			if (!timer.IsRunning && this.CurrentVelocity == 0)
+			if (!timer.IsRunning && this.CurrentVelocity.IsZero())
 			{
 				timer = new Stopwatch();
 				timer.Start ();
@@ -291,18 +284,18 @@ public class PlayerHandler : MonoBehaviour
 			{
 				speedFactor = -SPEED_DROP_FACTOR; // then we slow down the car, stops bugs
 			}
-			else if (this.CurrentVelocity < MathUtils.HalfOf (curMaxSpeed)) // if current velocity is less than current max speed halved.
+			else if (this.CurrentVelocity <  curMaxSpeed.Half ()) // if current velocity is less than current max speed halved.
 			{
-				speedFactor = (speedFactors[1] * 2 / (acceleration / carWeight));
+				speedFactor = (speedFactors[1].Multiply() / (acceleration / carWeight));
 			}
-			else if (this.CurrentVelocity < (curMaxSpeed - (curMaxSpeed / 4)))
+			else if (this.CurrentVelocity < (curMaxSpeed - curMaxSpeed.Quarter()))
 			{
-				speedFactor = speedFactors[0] * 2 / (acceleration / carWeight);
+				speedFactor = speedFactors[0].Multiply() / (acceleration / carWeight);
 			}
 			else if (this.CurrentVelocity < curMaxSpeed) // if current velocity is less than current max speed
 			{
 				var penalty = speedFactors[0] / PENALTY_DIVIDER;
-				speedFactor = (speedFactors[0] * 2 / (acceleration / carWeight)) - penalty;
+				speedFactor = (speedFactors[0].Multiply() / (acceleration / carWeight)) - penalty;
 			}
 
 			if (this.CurrentVelocity >= 100 && timer.IsRunning)
@@ -321,7 +314,7 @@ public class PlayerHandler : MonoBehaviour
 			{
 				speedFactor = speedFactors[1] / (acceleration / carWeight);
 			}
-			else if (this.CurrentVelocity < (curMaxSpeedNoThrust - (curMaxSpeedNoThrust / 4)))
+			else if (this.CurrentVelocity < (curMaxSpeedNoThrust - curMaxSpeedNoThrust.Quarter()))
 			{
 				speedFactor = speedFactors[0] / (acceleration / carWeight);
 			}
@@ -376,18 +369,6 @@ public class PlayerHandler : MonoBehaviour
 		else if (this.CurrentVelocity > this.PlayerCar.GetMaxSpeed ())
 			speedFactor = -SPEED_PENALTY;
 
-		/*
-		 * COLLISION IS BROKEN AS OF 5.11.2015
-		 * PLEASE FIX :-(
-		if (IsColliding) 
-		{
-			var collideFactor = (COLLISION_SPEED_FACTOR * (this.CollideAngle / FULL_CIRCLE));
-
-			if (this.CurrentVelocity - collideFactor >= 0)
-				speedFactor = -collideFactor;
-		}
-		*/
-
 		this.CurrentVelocity += speedFactor;
 
 		this.CurrentVelocity /= this.CalculateCurrentVelocityAccelerationModifier(curMaxSpeed);
@@ -416,22 +397,6 @@ public class PlayerHandler : MonoBehaviour
 		this.Player.AddForce (rotQuaternion * (this.CurrentVelocity < 0 ? 
 		                                                                MathUtils.Flip (this.CurrentVelocity) * REVERSE_FORCE_MULTIPLIER : 
 		                                                                (-this.CurrentVelocity * FORCE_MULTIPLIER)));
-
-		// Finally, move the player
-		//this.Player.Move (speed);
-		//transform.position = transform.position + speed;
-		//speed = transform.TransformDirection (speed);
-		//this.GetComponent<Rigidbody> ().velocity = speed;
-		//this.GetComponent<Rigidbody> ().AddForce (Vector3.forward * -10);
-	}
-
-	/// <summary>
-	/// Raises the controller collider hit event.
-	/// </summary>
-	/// <param name="hit">Hit.</param>
-	private void OnControllerColliderHit(ControllerColliderHit hit)
-	{
-		//TODO: Make the collider hit detection work
 	}
 
 	/// <summary>
@@ -482,7 +447,7 @@ public class PlayerHandler : MonoBehaviour
 	/// <param name="curMaxSpeed">Current max speed.</param>
 	private float CalculateCurrentVelocityAccelerationModifier(float curMaxSpeed)
 	{
-		return (((2f * curMaxSpeed) - curMaxSpeed) / curMaxSpeed);
+		return ((curMaxSpeed.Multiply() - curMaxSpeed) / curMaxSpeed);
 	}
 
 	/// <summary>
