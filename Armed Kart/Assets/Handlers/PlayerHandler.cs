@@ -79,7 +79,6 @@ public class PlayerHandler : MonoBehaviour
 	/// FOR GETTING, USE GetHasFinishedRace() function, which also takes into consideration the debug mode, etc.
 	/// </summary>
 	private bool HasFinishedRace = false;
-	
 	/// <summary>
 	/// Gets or sets a value indicating whether the car is rotating.
 	/// </summary>
@@ -115,7 +114,7 @@ public class PlayerHandler : MonoBehaviour
 	const float ROTATION_FACTOR = 3f;
 	const float FORCE_MULTIPLIER = 7f; // May the Force be with you
 	const float REVERSE_FORCE_MULTIPLIER = 20f; // May the... reverse Force...? be with you
-	const float GRAVITY_MULTIPLIER = -1000f; // Used to calculate the intensity of gravity
+	const float GRAVITY_MULTIPLIER = 0.0f; // Used to calculate the intensity of gravity
 	const float DRIFTING_SPEED_DROP_FACTOR = 6f; // Used to make the drifting more realistic
 	const float SPEED_PENALTY = 10f; // Used to calculate the new speed factor if velocity is too low or high, 
 									 // disables the "Big Rigs" style of reverse movement for example
@@ -139,7 +138,7 @@ public class PlayerHandler : MonoBehaviour
 	{
 		this.HasFinishedRace = true;
 	}
-	
+
 	/// <summary>
 	/// Used to initialize the player
 	/// </summary>
@@ -167,14 +166,14 @@ public class PlayerHandler : MonoBehaviour
 		 * ja palauttaa jokaisen objektin sieltä arraysta, jonka esim. noissa tapauksissa ForPlayer on yhtäsuuri kuin transform.name
 		 * ja FirstOrDefault() ottaa joko ensimmäisen itemin Where(Action)-funktion palauttamasta arraysta, tai jos ei itemejä ole, palauttaa defaulttiarvon.
 		 */ 
-
-		this.Player = GetComponent<Rigidbody> ();
-		this.PlayerMinimap = GameObject.FindGameObjectsWithTag ("Minicamera").Where (t => t.GetComponent<MinimapHandler> ().ForPlayer == transform.name).FirstOrDefault();
-		this.PlayerMinimapHandler = this.PlayerMinimap.GetComponent<MinimapHandler> ();
-		this.PlayerCamera = GameObject.FindGameObjectsWithTag ("PlayerCamera").Where (t => t.GetComponent<CameraHandler> ().AttachedPlayer == transform.name).FirstOrDefault ();
-
-		this.PlayerCamera.GetComponent<Camera> ().enabled = true;
-
+		this.Player = GetComponentInChildren<Rigidbody> ();
+		
+		this.PlayerMinimap = GameObject.FindGameObjectsWithTag ("Minicamera").Where (t => t.GetComponentInChildren<MinimapHandler> ().ForPlayer == transform.name).FirstOrDefault();
+		this.PlayerMinimapHandler = this.PlayerMinimap.GetComponentInChildren<MinimapHandler> ();
+		this.PlayerCamera = GameObject.FindGameObjectsWithTag ("PlayerCamera").Where (t => t.GetComponentInChildren<CameraHandler> ().AttachedPlayer == transform.name).FirstOrDefault ();
+		
+		this.PlayerCamera.GetComponentInChildren<Camera> ().enabled = true;
+		
 		this.HandlePlayerMinimap ();
 		this.HandlePlayerDrifting ();
 		this.HandlePlayerRotation ();
@@ -186,8 +185,7 @@ public class PlayerHandler : MonoBehaviour
 	/// </summary>
 	private void LateUpdate()
 	{
-		transform.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-
+		this.Player.angularVelocity = Vector3.zero;		
 	}
 
 	private void HandlePlayerDrifting()
@@ -241,7 +239,7 @@ public class PlayerHandler : MonoBehaviour
 			{
 				IsRotating = true;
 
-				this.Player.MoveRotation(Quaternion.Euler (transform.GetComponent<Rigidbody>().rotation.eulerAngles) * Quaternion.Euler (0, rot * Time.deltaTime, 0));
+				this.Player.MoveRotation(Quaternion.Euler (Player.rotation.eulerAngles) * Quaternion.Euler (0, rot * Time.deltaTime, 0));
 			}
 			else
 			{
@@ -271,7 +269,7 @@ public class PlayerHandler : MonoBehaviour
 
 		var speedFactor = 0f;
 
-		if (/*Input.GetKey (KeyCode.W) && */Input.GetKey (KeyCode.LeftShift) && !Input.GetKey (KeyCode.S) && !GetHasFinishedRace()) // if shift + w is pressed
+		if (Input.GetKey (KeyCode.W) && Input.GetKey (KeyCode.LeftShift) && !Input.GetKey (KeyCode.S) && !GetHasFinishedRace()) // if shift + w is pressed
 		{	
 
 			if (!timer.IsRunning && this.CurrentVelocity.IsZero())
@@ -304,7 +302,7 @@ public class PlayerHandler : MonoBehaviour
 				UnityEngine.Debug.Log ("We accelerated to 100km/h in " + timer.ElapsedMilliseconds + " ms");
 			}
 		}
-		else if (/*Input.GetKey (KeyCode.W) && */!GetHasFinishedRace() && !Input.GetKey (KeyCode.S)) // if not
+		else if (Input.GetKey (KeyCode.W) && !GetHasFinishedRace() && !Input.GetKey (KeyCode.S)) // if not
 		{
 			if (this.CurrentVelocity > curMaxSpeedNoThrust)
 			{
@@ -374,8 +372,8 @@ public class PlayerHandler : MonoBehaviour
 		this.CurrentVelocity /= this.CalculateCurrentVelocityAccelerationModifier(curMaxSpeed);
 
 		var zModifier = MathUtils.Flip (this.SetVelocityRealistic (this.CurrentVelocity.Round ())); // we flip the current velocity and make it realistic
-		var speed = new Vector3 (0, (transform.GetComponent<BasicEntityHandler>().GetIsGrounded() ? 0 : (9.81f * GRAVITY_MULTIPLIER) * this.PlayerCar.GetCarWeight()), zModifier);
-		speed = transform.rotation * speed; // we times the speed by the rotation quaternion to make the car actually move in the right direction
+		var speed = new Vector3 ( 0, 0/*zModifier*/, 0 );
+		speed = transform.FindChild("Model").rotation * speed; // we times the speed by the rotation quaternion to make the car actually move in the right direction
 
 		this.CurrentSpeed = speed;
 
@@ -389,7 +387,7 @@ public class PlayerHandler : MonoBehaviour
 		                {
 			//TODO: Fix this!!!!!!! THE SECOND PARAMETER IS THE, UHM... a
 			//		YOU KNOW... WHEN YOU TURN THE CAR... ROTATION... THINGY... I HOPE YOU KNOW
-			w.transform.Rotate (new Vector3(0, 0, this.CurrentVelocity));
+			w.transform.Rotate (new Vector3(0, this.CurrentVelocity, 0 ));
 		});
 
 		this.Player.velocity = speed;

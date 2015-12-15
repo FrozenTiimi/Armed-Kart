@@ -39,11 +39,11 @@ public class BasicEntityHandler : MonoBehaviour
 	// Update is called once per frame
 	private void Update () 
 	{
-		this.Player = GetComponent<Rigidbody> ();
+		this.Player = GetComponentInChildren<Rigidbody> ();
 
 		var carWeight = 2f; // default;
 
-		if (GetComponent <PlayerHandler>() ?? null) // checks if PlayerHandler is not found
+		if (GetComponent <PlayerHandler>() != null) // checks if PlayerHandler is not found
 		{
 			this.Player.mass = carWeight = GetComponent<PlayerHandler> ().PlayerCar.GetCarWeight ();
 			carWeight += 1f;
@@ -107,7 +107,7 @@ public class BasicEntityHandler : MonoBehaviour
 
 		wheelRays.Add (!Physics.Raycast (raycastRay2, out raycastHitInfo2));
 		
-		Debug.Log (wheelRays.Contains (true));
+		//Debug.Log (wheelRays.Contains (true));
 		
 		return wheelRays.Contains(true);
 	}

@@ -2,9 +2,9 @@ Initialize engine version: 5.1.2f1 (afd2369b692a)
 GfxDevice: creating device client; threaded=1
 Direct3D:
     Version:  Direct3D 11.0 [level 11.0]
-    Renderer: NVIDIA Quadro K620  (ID=0x13bb)
+    Renderer: NVIDIA Quadro K600  (ID=0xffa)
     Vendor:   NVIDIA
-    VRAM:     1974 MB
+    VRAM:     974 MB
 Begin MonoManager ReloadAssembly
 Platform assembly: K:\Armed-Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine.dll (this message is harmless)
 Loading K:\Armed-Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine.dll into Unity Child Domain
@@ -18,7 +18,7 @@ Platform assembly: K:\Armed-Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine
 Loading K:\Armed-Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: K:\Armed-Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
 Loading K:\Armed-Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
-- Completed reload, in  0.861 seconds
-desktop: 1920x1200 59Hz; virtual: 3840x1200 at -1920,0
+- Completed reload, in  2.281 seconds
+desktop: 1920x1200 59Hz; virtual: 3200x1200 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
