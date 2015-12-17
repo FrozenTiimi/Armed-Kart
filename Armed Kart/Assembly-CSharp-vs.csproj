@@ -63,6 +63,7 @@
      <Compile Include="Assets\Handlers\RaceCanvasButtonHandler.cs" />
      <Compile Include="Assets\Handlers\Utilities\ExtensionUtils.cs" />
      <Compile Include="Assets\Handlers\Utilities\MathUtils.cs" />
+     <None Include="Assets\Materials\FogOfWar\FogOfWar.shader" />
      <None Include="Assets\Standard Assets\Environment\Water\Water4\Shaders\FXWater4Simple.shader" />
      <None Include="Assets\Standard Assets\Environment\Water\Water\Shaders\FXWaterPro.shader" />
      <None Include="Assets\Handlers\FogOfWar.cs.txt" />
