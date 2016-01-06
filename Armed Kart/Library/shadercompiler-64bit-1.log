@@ -1,7 +1,39 @@
-Base path: C:/Program Files (x86)/Unity/Editor/Data
-Pipe name: \\.\pipe\UnityShaderCompiler-64bit-1-4644
+Base path: C:/Program Files/Unity/Editor/Data
+Pipe name: \\.\pipe\UnityShaderCompiler-64bit-1-39344
 Cmd: getPlatforms
-Unhandled exception: Readfile from pipe failed. GLE=Putki on lopetettu.
-
-
-Quitting shader compiler process
+Cmd: preprocess
+  insize=4320 outsize=1045 ok=1
+Cmd: preprocess
+  insize=13263 outsize=2671 ok=1
+Cmd: preprocess
+  insize=12408 outsize=2547 ok=1
+Cmd: preprocess
+  insize=1376 outsize=1799 ok=1
+Cmd: compileSnippet
+  api=4 type=0 insize=7710 outsize=4044 kw=DIRECTIONAL SHADOWS_OFF LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_OFF ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=7710 outsize=1363 kw=DIRECTIONAL SHADOWS_OFF LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_OFF ok=1
+Cmd: compileSnippet
+  api=4 type=0 insize=4501 outsize=3134 kw=POINT ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=4501 outsize=1997 kw=POINT ok=1
+Cmd: compileSnippet
+  api=4 type=0 insize=3659 outsize=2915 kw= ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=3659 outsize=746 kw= ok=1
+Cmd: compileSnippet
+  api=4 type=0 insize=6703 outsize=4459 kw=LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_OFF HDR_LIGHT_PREPASS_OFF ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=6703 outsize=1412 kw=LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_OFF HDR_LIGHT_PREPASS_OFF ok=1
+Cmd: compileSnippet
+  api=4 type=0 insize=6782 outsize=4183 kw=LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_OFF HDR_LIGHT_PREPASS_OFF ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=6782 outsize=1696 kw=LIGHTMAP_OFF DIRLIGHTMAP_OFF DYNAMICLIGHTMAP_OFF HDR_LIGHT_PREPASS_OFF ok=1
+Cmd: compileSnippet
+  api=4 type=0 insize=3850 outsize=2866 kw= ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=3850 outsize=1363 kw= ok=1
+Cmd: compileSnippet
+  api=4 type=0 insize=4501 outsize=3134 kw=DIRECTIONAL ok=1
+Cmd: compileSnippet
+  api=4 type=1 insize=4501 outsize=1217 kw=DIRECTIONAL ok=1

@@ -10,11 +10,11 @@ public class CameraHandler : MonoBehaviour
 	/// Do not change these
 	/// They handle camera offsets, and they are fine, for the moment.
 	/// </summary>
-	const int yOffsetMagicNumber = 100;
-	const int zOffsetMagicNumber = 140;
+	const int yOffsetMagicNumber = 30;
+	const int zOffsetMagicNumber = 40;
 
-	const int yOffsetClose = 30;
-	const int zOffsetClose = 30;
+	const int yOffsetClose = 3;
+	const int zOffsetClose = 3;
 
 	public string AttachedPlayer;
 

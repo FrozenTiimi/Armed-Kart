@@ -53,8 +53,8 @@ public class GUIHandler : MonoBehaviour
 			GUI.Label (new Rect (0, 16, 200, 200), "FPS: " + this.CurrentFPS.ToString(), gS);
 			GUI.Label (new Rect (0, 32, 200, 200), "Vertices in current terrain: " + ((this.CurrentVertices < 0) ? "Calculating" : this.CurrentVertices.ToString()), gS);
 			GUI.Label (new Rect (0, 48, 200, 200), "Car Speed: " + pHandler.CurrentVelocity, gS);
-			GUI.Label (new Rect (0, 64, 200, 200), "Is Colliding: " + pHandler.IsCarColliding().ToString(), gS);
-			GUI.Label (new Rect (0, 80, 200, 200), "\tColliding Angle: " + pHandler.GetCollidingAngle().ToString(), gS);
+			//GUI.Label (new Rect (0, 64, 200, 200), "Is Colliding: " + pHandler.IsCarColliding().ToString(), gS);
+			//GUI.Label (new Rect (0, 80, 200, 200), "\tColliding Angle: " + pHandler.GetCollidingAngle().ToString(), gS);
 		}
 
 		var raceFinishedStyle = new GUIStyle (gS);

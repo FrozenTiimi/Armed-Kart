@@ -7,8 +7,163 @@ using System.Linq;
 
 using ArmedKart.Utilities;
 
+public class PlayerHandler : MonoBehaviour 
+{
+	const float ROTATION_FACTOR = 3f;
+
+	const int ROTATION_MULTIPLIER = 60;
+
+	private Rigidbody Car { get; set; }
+
+	private GameObject PlayerCamera { get; set; }
+
+	private bool IsRotating { get; set; }
+
+	public  bool IsBraking = false;
+
+	public float CurrentVelocity = 0f;
+	public float CurrentRotation = 0f;
+	public float Power = 1000f; //TODO: Make this so that this is a CAR PROPERTY
+	public float Friction = 10f; //TODO: This should be a CAR PROPERTY
+
+	public CarTypes CarType;
+
+	public CarHandler PlayerCar;
+
+	private bool HasFinishedRace = false;
+
+	public void FinishRace()
+	{
+		this.HasFinishedRace = true;
+	}
+	
+	private void Start()
+	{
+		this.Car = this.GetComponent<Rigidbody> ();
+
+		this.Car.centerOfMass = new Vector3 (0f, 0f, 1.0f);
+
+		switch (CarType) 
+		{
+			case 0:
+			default:
+				PlayerCar = new TestCar();
+				break;
+		}
+	}
+
+	private void FixedUpdate()
+	{
+	}
+
+	private void LateUpdate()
+	{
+		this.Car.angularVelocity = Vector3.zero;
+	}
+
+	private void Update()
+	{
+
+		this.PlayerCamera = this.PlayerCamera = GameObject.FindGameObjectsWithTag 
+			("PlayerCamera").Where (t => t.GetComponentInChildren<CameraHandler> ().AttachedPlayer == transform.name).FirstOrDefault ();
+
+		this.PlayerCamera.GetComponentInChildren<Camera> ().enabled = true;
+
+		this.HandlePlayerRotation ();
+		this.HandlePlayerMovement ();
+	}
+	
+	private void HandlePlayerRotation()
+	{
+		var curMaxSpeed = PlayerCar.GetMaxSpeed ();
+		
+		//TODO: Make this rotation more realistic
+		// Simple rotation
+		//if (Input.GetKey (KeyCode.A) || Input.GetKey (KeyCode.D)) 
+		//{
+			/*var rot = Input.GetAxis("Horizontal");
+			
+			// 1 is full, -1 is full
+			rot *= curMaxSpeed * ROTATION_FACTOR;
+			rot += (CurrentVelocity - (curMaxSpeed / ROTATION_FACTOR)) + (false ? (CurrentVelocity / ROTATION_FACTOR) : 0); // this handles rotation speed
+			rot /= curMaxSpeed * ROTATION_FACTOR;
+			
+			rot *= ROTATION_MULTIPLIER;
+			
+			// Jerpan driftaus juttuja
+			//if (this.IsDrifting)
+			//	rot *= 2.5f;
+			
+			this.CurrentRotation = rot;
+			
+			if (this.CurrentVelocity > 1 || this.CurrentVelocity < -1)
+			{
+				IsRotating = true;
+				
+				this.Car.MoveRotation(Quaternion.Euler (this.Car.rotation.eulerAngles) * Quaternion.Euler (0, rot * Time.deltaTime, 0));
+			}
+			else
+			{
+				IsRotating = false;
+			}
+			*/
+		var deltaRotation = (Input.GetAxis ("Horizontal") * Time.deltaTime) * 100;
+
+		this.Car.MoveRotation(this.Car.rotation * Quaternion.Euler (0, 0, deltaRotation));
+		//}
+	}
+	
+	private void HandlePlayerMovement()
+	{
+		var curMaxSpeed = PlayerCar.GetMaxSpeed ();
+		var curMaxReverseSpeed = PlayerCar.GetCarReverseSpeed ();
+
+		var speedFactor = 1f;
+
+		if (Input.GetKeyDown (KeyCode.S)) 
+		{
+			this.IsBraking = true;
+
+			speedFactor = -1f;
+		} 
+		else
+			this.IsBraking = false;
+
+		if (this.CurrentVelocity > 250f)
+			speedFactor = -1f;
+		else if (this.CurrentVelocity < -curMaxReverseSpeed)
+			speedFactor = 1f;
+
+		this.CurrentVelocity += speedFactor;
+
+		//this.CurrentVelocity *= 0.25f;
+		//var curMaxSpeed = PlayerCar.GetMaxSpeed ();
+
+		var speedModifier = Vector3.right * this.GetGameVelocity (this.CurrentVelocity, curMaxSpeed, speedFactor);
+
+		//this.Car.velocity = transform.right * this.GetRealisticVelocity(this.CurrentVelocity);
+		transform.Translate (this.IsBraking ? speedModifier * -1 : speedModifier);
+	}
+
+	public bool GetHasFinishedRace()
+	{
+		return this.HasFinishedRace;
+	}
+
+	private float GetRealisticVelocity(float velocity)
+	{
+		return velocity / 3;
+	}
+
+	private float GetGameVelocity(float velocity, float maxVelocity, float speedFactor)
+	{
+		return velocity / maxVelocity.Multiply();
+	}
+}
+
 //TODO: This is currently ported for PC. PORT TO ANDROID LATER
 
+/*
 /// <summary>
 /// Handles the player's movement, rotation, etc.
 /// </summary>
@@ -166,6 +321,7 @@ public class PlayerHandler : MonoBehaviour
 		 * ja palauttaa jokaisen objektin sieltä arraysta, jonka esim. noissa tapauksissa ForPlayer on yhtäsuuri kuin transform.name
 		 * ja FirstOrDefault() ottaa joko ensimmäisen itemin Where(Action)-funktion palauttamasta arraysta, tai jos ei itemejä ole, palauttaa defaulttiarvon.
 		 */ 
+/*
 		this.Player = GetComponentInChildren<Rigidbody> ();
 		
 		this.PlayerMinimap = GameObject.FindGameObjectsWithTag ("Minicamera").Where (t => t.GetComponentInChildren<MinimapHandler> ().ForPlayer == transform.name).FirstOrDefault();
@@ -327,6 +483,7 @@ public class PlayerHandler : MonoBehaviour
 			/*
 			 * This steps in after no key is pressed, so, this stops the car
 			 */
+/*
 			if (this.CurrentVelocity > SPEED_DROP_FACTOR)
 			{
 				speedFactor = -SPEED_DROP_FACTOR;
@@ -344,6 +501,7 @@ public class PlayerHandler : MonoBehaviour
 		/*
 		 * Handles the braking
 		 */
+/*
 		if (Input.GetKey (KeyCode.S) && !GetHasFinishedRace()) 
 		{
 			this.IsBraking = true;
@@ -372,7 +530,7 @@ public class PlayerHandler : MonoBehaviour
 		this.CurrentVelocity /= this.CalculateCurrentVelocityAccelerationModifier(curMaxSpeed);
 
 		var zModifier = MathUtils.Flip (this.SetVelocityRealistic (this.CurrentVelocity.Round ())); // we flip the current velocity and make it realistic
-		var speed = new Vector3 ( 0, 0/*zModifier*/, 0 );
+		var speed = new Vector3 ( 0, 0/*zModifier*//*, /*0 );
 		speed = transform.FindChild("Model").rotation * speed; // we times the speed by the rotation quaternion to make the car actually move in the right direction
 
 		this.CurrentSpeed = speed;
@@ -468,3 +626,4 @@ public class PlayerHandler : MonoBehaviour
 		return new List<GameObject> () { this.FrontLeft, this.FrontRight, this.BackLeft, this.BackRight };
 	}
 }
+*/
