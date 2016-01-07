@@ -29,7 +29,6 @@ public class MainMenuButtonHandler : MonoBehaviour
 				Application.Quit ();
 				return; // stop the application from continuing while in debugging mode
 			}
-
 			// load the level based on NextScene
 			Application.LoadLevel (NextScene);
 		});
