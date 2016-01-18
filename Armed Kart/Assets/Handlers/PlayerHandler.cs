@@ -9,12 +9,9 @@ using ArmedKart.Utilities;
 
 public class PlayerHandler : MonoBehaviour 
 {
-	const float ROTATION_FACTOR = 3f;
-
-	const int ROTATION_MULTIPLIER = 60;
+	const int ROTATION_MULTIPLIER = 100;
 
 	private Rigidbody Car { get; set; }
-
 	private GameObject PlayerCamera { get; set; }
 
 	private bool IsRotating { get; set; }
@@ -23,8 +20,8 @@ public class PlayerHandler : MonoBehaviour
 
 	public float CurrentVelocity = 0f;
 	public float CurrentRotation = 0f;
-	public float Power = 1000f; //TODO: Make this so that this is a CAR PROPERTY
 	public float Friction = 10f; //TODO: This should be a CAR PROPERTY
+	public float Health = 0f;
 
 	public CarTypes CarType;
 
@@ -32,47 +29,96 @@ public class PlayerHandler : MonoBehaviour
 
 	private bool HasFinishedRace = false;
 
+	/// <summary>
+	/// Finishes the race for the player.
+	/// </summary>
 	public void FinishRace()
 	{
 		this.HasFinishedRace = true;
 	}
-	
+
+	/// <summary>
+	/// Damages the car.
+	/// </summary>
+	/// <param name="damage">Amount of damage.</param>
+	public void DamageCar(float damage)
+	{
+		this.Health -= damage;
+
+		if (this.Health < 0)
+			this.Health = 0;
+	}
+
+	/// <summary>
+	/// Start this instance.
+	/// </summary>
 	private void Start()
 	{
+		//this.name = GameObject.Find ("NameField").GetComponentsInChildren<UnityEngine.UI.Text> () [1].text;
+		//var playerCarMeshName = ApplicationModel.GetCarMesh (this.name);
+
+
 		this.Car = this.GetComponent<Rigidbody> ();
 
 		this.Car.centerOfMass = new Vector3 (0f, 0f, 1.0f);
+
+		var meshFilter = gameObject.AddComponent<MeshFilter> ();
 
 		switch (CarType) 
 		{
 			case 0:
 			default:
-				PlayerCar = new TestCar();
+//				PlayerCar = new TestCar();
+				//meshFilter.sharedMesh = Resources.Load<Mesh>(PlayerCar.ModelLocation);
 				break;
 		}
+
+		if (meshFilter.mesh != null)
+			UnityEngine.Debug.Log ("Player Car Mesh loaded successfully!");
+		else
+			UnityEngine.Debug.LogError ("Player Car Mesh is null");
 	}
 
+	/// <summary>
+	/// The time.DeltaTime'd update method
+	/// </summary>
 	private void FixedUpdate()
 	{
 	}
 
+	/// <summary>
+	/// Update that happens after the real Update
+	/// </summary>
 	private void LateUpdate()
 	{
 		this.Car.angularVelocity = Vector3.zero;
 	}
 
+	/// <summary>
+	/// Update this instance.
+	/// </summary>
 	private void Update()
 	{
-
 		this.PlayerCamera = this.PlayerCamera = GameObject.FindGameObjectsWithTag 
 			("PlayerCamera").Where (t => t.GetComponentInChildren<CameraHandler> ().AttachedPlayer == transform.name).FirstOrDefault ();
 
 		this.PlayerCamera.GetComponentInChildren<Camera> ().enabled = true;
 
-		this.HandlePlayerRotation ();
-		this.HandlePlayerMovement ();
+		if (this.IsDead ()) 
+		{
+			//TODO: Make le explosions happen
+			//Destroy(this.gameObject);
+		} 
+		else 
+		{
+			this.HandlePlayerRotation ();
+			this.HandlePlayerMovement ();
+		}
 	}
-	
+
+	/// <summary>
+	/// Handles the player rotation.
+	/// </summary>
 	private void HandlePlayerRotation()
 	{
 		var curMaxSpeed = PlayerCar.GetMaxSpeed ();
@@ -107,47 +153,69 @@ public class PlayerHandler : MonoBehaviour
 				IsRotating = false;
 			}
 			*/
-		var deltaRotation = (Input.GetAxis ("Horizontal") * Time.deltaTime) * 100;
+		var deltaRotation = (Input.GetAxis ("Horizontal") * Time.deltaTime) * ROTATION_MULTIPLIER;
+
+		//TODO: This is going to be drifting, implement it correctly
+		if (false)
+			deltaRotation *= 1.5f;
 
 		this.Car.MoveRotation(this.Car.rotation * Quaternion.Euler (0, 0, deltaRotation));
 		//}
 	}
-	
+
+	/// <summary>
+	/// Handles the player movement.
+	/// </summary>
 	private void HandlePlayerMovement()
 	{
 		var curMaxSpeed = PlayerCar.GetMaxSpeed ();
 		var curMaxReverseSpeed = PlayerCar.GetCarReverseSpeed ();
+		var curPower = PlayerCar.GetCarPower ();
 
-		var speedFactor = 1f;
+		var speedFactor = curPower;
 
 		if (Input.GetKeyDown (KeyCode.S)) 
 		{
 			this.IsBraking = true;
 
-			speedFactor = -1f;
+			speedFactor = -curPower;
 		} 
 		else
 			this.IsBraking = false;
 
 		if (this.CurrentVelocity > 250f)
-			speedFactor = -1f;
+			speedFactor = -curPower;
 		else if (this.CurrentVelocity < -curMaxReverseSpeed)
-			speedFactor = 1f;
+			speedFactor = curPower;
 
 		this.CurrentVelocity += speedFactor;
 
-		//this.CurrentVelocity *= 0.25f;
+		this.CurrentVelocity *= 0.25f;
 		//var curMaxSpeed = PlayerCar.GetMaxSpeed ();
 
-		var speedModifier = Vector3.right * this.GetGameVelocity (this.CurrentVelocity, curMaxSpeed, speedFactor);
+		var speedModifier = Vector3.right * this.GetGameVelocity (this.CurrentVelocity, curMaxSpeed);
 
-		//this.Car.velocity = transform.right * this.GetRealisticVelocity(this.CurrentVelocity);
+		this.Car.velocity = transform.forward * this.GetRealisticVelocity(this.CurrentVelocity);
 		transform.Translate (this.IsBraking ? speedModifier * -1 : speedModifier);
 	}
 
+	/// <summary>
+	/// Gets whether the player has finished the race or not
+	/// </summary>
+	/// <returns><c>true</c>, if has finished race, <c>false</c> otherwise.</returns>
 	public bool GetHasFinishedRace()
 	{
 		return this.HasFinishedRace;
+	}
+
+	public bool IsDamaged()
+	{
+		return this.Health < this.PlayerCar.GetCarHealth ();
+	}
+
+	public bool IsDead()
+	{
+		return this.Health <= 0;
 	}
 
 	private float GetRealisticVelocity(float velocity)
@@ -155,9 +223,9 @@ public class PlayerHandler : MonoBehaviour
 		return velocity / 3;
 	}
 
-	private float GetGameVelocity(float velocity, float maxVelocity, float speedFactor)
+	private float GetGameVelocity(float velocity, float maxVelocity)
 	{
-		return velocity / maxVelocity.Multiply();
+		return (velocity / maxVelocity) * Time.deltaTime;
 	}
 }
 

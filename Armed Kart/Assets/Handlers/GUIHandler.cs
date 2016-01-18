@@ -71,7 +71,7 @@ public class GUIHandler : MonoBehaviour
 		var lapStyle = new GUIStyle(gS);
 		lapStyle.fontSize = 20;
 
-		var playerHandler = transform.parent.GetComponent<PlayerHandler> ();
+		var playerHandler = transform.parent.GetComponent<CarEngine> (); //TODO: FIX;
 		var goalHandler = GameObject.FindGameObjectWithTag ("Goal").GetComponent<GoalHandler> ();
 		var gameStartHandler = GameObject.FindGameObjectWithTag ("GameController").GetComponent<GameStart> ();
 
@@ -108,7 +108,7 @@ public class GUIHandler : MonoBehaviour
 			                     GetTextWidth (lapText, lapStyle), lapStyle.fontSize), lapText, lapStyle);
 		}
 
-		if (playerHandler.GetHasFinishedRace ()) 
+		if (false) //playerHandler.GetHasFinishedRace() 
 		{
 			if (!StopShowingRaceFinishedTexts)
 			{

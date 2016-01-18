@@ -24,29 +24,26 @@ public abstract class CarHandler
 	protected float CarReverseSpeed;
 
 	/// <summary>
-	/// The acceleration.
-	/// The lower this is, the faster the car will go
-	/// </summary>
-	protected float Acceleration;
-
-	/// <summary>
 	/// The car turning speed factor.
 	/// Lower this to make speed lower when turning
 	/// </summary>
 	protected float CarTurningSpeedFactor;
 
 	/// <summary>
-	/// The speed factors.
-	/// The first parameter is when you have W pressed down
-	/// The second parameter is when you have Shift + W pressed down
+	/// The car power.
 	/// </summary>
-	protected float[] SpeedFactors = new float[] { 0f, 0f };
+	protected float CarPower;
+
+	/// <summary>
+	/// The car health.
+	/// </summary>
+	protected float CarHealth;
 
 	protected string ModelName = string.Empty;
 
 	public string ModelLocation 
 	{
-		get { return "/Models/" + ModelName; }
+		get { return "Cars/" + ModelName; }
 	}
 
 	/// <summary>
@@ -64,12 +61,6 @@ public abstract class CarHandler
 		return CarWeight;
 	}
 
-	//Gets the speed factor and returns it.
-	public float[] GetSpeedFactors()
-	{
-		return SpeedFactors;
-	}
-
 	/// <summary>
 	/// Gets the car reverse speed.
 	/// </summary>
@@ -80,21 +71,30 @@ public abstract class CarHandler
 	}
 
 	/// <summary>
-	/// Gets the car acceleration.
-	/// </summary>
-	/// <returns>The car acceleration.</returns>
-	public float GetCarAcceleration()
-	{
-		return Acceleration;
-	}
-
-	/// <summary>
 	/// Gets the car turning speed factor.
 	/// </summary>
 	/// <returns>The car turning speed factor.</returns>
 	public float GetCarTurningSpeedFactor()
 	{
 		return CarTurningSpeedFactor;
+	}
+
+	/// <summary>
+	/// Gets the car power.
+	/// </summary>
+	/// <returns>The car power.</returns>
+	public float GetCarPower()
+	{
+		return this.CarPower;
+	}
+
+	/// <summary>
+	/// Gets the car health.
+	/// </summary>
+	/// <returns>The car health.</returns>
+	public float GetCarHealth()
+	{
+		return this.CarHealth;
 	}
 }
 

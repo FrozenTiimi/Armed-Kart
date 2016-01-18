@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
 /// Handles the player camera. To be changed, A LOT
@@ -10,13 +11,11 @@ public class CameraHandler : MonoBehaviour
 	/// Do not change these
 	/// They handle camera offsets, and they are fine, for the moment.
 	/// </summary>
-	const int yOffsetMagicNumber = 30;
-	const int zOffsetMagicNumber = 40;
-
-	const int yOffsetClose = 3;
-	const int zOffsetClose = 3;
-
+	const int yOffsetMagicNumber = 90;
+	const int zOffsetMagicNumber = 120;
 	public string AttachedPlayer;
+	const int yOffsetClose = 30;
+	const int zOffsetClose = 40;
 
 	private float yOffset = yOffsetMagicNumber;
 	private float zOffset = zOffsetMagicNumber;
@@ -28,20 +27,25 @@ public class CameraHandler : MonoBehaviour
 	{ }
 	
 	// Update is *ignored* once per frame
-	private void Update () 
+	private void Update ()  
 	{
 		// Get the player, is there any other way? This seems dumb and risky.
-		var player = GameObject.Find(AttachedPlayer);
+		var player = GameObject.FindGameObjectWithTag("Player");
 
-		transform.position = new Vector3 (player.transform.position.x, player.transform.position.y + yOffset, player.transform.position.z + zOffset);
-		transform.LookAt (player.transform.position);
+		Debug.Log ("PLAYER: " + player);
+		Debug.Log ("TRANSFORM: " + player.transform);
 
-		var heading = player.transform.position - transform.position;
+		transform.position = new Vector3 (player.GetComponentInChildren<Rigidbody>().position.x, 
+		                                  player.GetComponentInChildren<Rigidbody>().position.y + yOffset, 
+		                                  player.GetComponentInChildren<Rigidbody>().position.z + zOffset);
+		transform.LookAt (player.GetComponentInChildren<Rigidbody>().position);
+
+		var heading = player.GetComponentInChildren<Rigidbody>().position - transform.position;
 		var distance = heading.magnitude;
 		var direction = heading / distance;
 
-		Debug.DrawRay (transform.position, heading, Color.black);
-
+		//Debug.DrawRay (transform.position, heading, Color.black);
+		/*
 		var ray = new Ray (transform.position, heading);
 		var hit = new RaycastHit ();
 
@@ -53,10 +57,12 @@ public class CameraHandler : MonoBehaviour
 			} 
 			else 
 			{
-				if (!IsFar () && !player.GetComponent<PlayerHandler>().GetHasFinishedRace())
+				if (!IsFar () && !false /* hasfinishedrace *//*)
 					SlideOut (ref this.yOffset, ref this.zOffset);
 			}
 		}
+
+*/
 
 
 		//Debug.DrawLine (transform.position, player.transform.position - transform.position, Color.black);
