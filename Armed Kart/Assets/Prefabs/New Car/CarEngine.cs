@@ -20,7 +20,7 @@ public class CarEngine : MonoBehaviour
 		carRB = GetComponent<Rigidbody> ();
 		carRB.centerOfMass = new Vector3 (-1, 0, -2);
 		originalSpeed = moveSpeed;
-		boundY = GetComponent<MeshCollider> ().bounds.extents.y;
+		boundY = GetComponentInChildren<MeshCollider> ().bounds.extents.y;
 	}
 	
 	// Update is called once per frame
@@ -29,7 +29,7 @@ public class CarEngine : MonoBehaviour
 		var rotateMovement = rotateSpeed / (moveSpeed % rotateSpeed);
 
 		RaycastHit hit;
-		IsGrounded ();
+		this.isRayTouchingGround = !IsGrounded ();
 
 		if (isRayTouchingGround)
 
@@ -42,7 +42,7 @@ public class CarEngine : MonoBehaviour
 		{
 			if (Input.GetKey ("a")) 
 			{
-				transform.Rotate (0, 0, -rotateSpeed * Time.fixedDeltaTime);
+				transform.Rotate (0, -rotateSpeed * Time.fixedDeltaTime, 0);
 				if (moveSpeed == originalSpeed) {
 					moveSpeed = (moveSpeed / 2);
 				}
@@ -50,7 +50,7 @@ public class CarEngine : MonoBehaviour
 
 			if (Input.GetKey ("d")) 
 			{
-				transform.Rotate (0, 0, rotateSpeed * Time.fixedDeltaTime);
+				transform.Rotate (0, rotateSpeed * Time.fixedDeltaTime, 0);
 				if (moveSpeed == originalSpeed) 
 				{
 					moveSpeed = (moveSpeed / 2);
@@ -62,10 +62,16 @@ public class CarEngine : MonoBehaviour
 				moveSpeed = originalSpeed;
 			}
 			
-			if(Input.GetKey(KeyCode.Space))
+			if(Input.GetKey(KeyCode.S))
 			{
 				carRB.velocity = carRB.velocity * 0.99f;
 			}
+			if(Input.GetKey (KeyCode.LeftShift))
+			{
+				moveSpeed += moveSpeed/4;
+			}
+			else
+				moveSpeed = originalSpeed;
 		}		
 	}
 
@@ -73,7 +79,10 @@ public class CarEngine : MonoBehaviour
 		carRB.angularVelocity = carRB.angularVelocity * 0.01f;
 
 		var kek = RealisticVelocity(moveSpeed) * Time.fixedDeltaTime;
-		carRB.AddForce (transform.right * kek);
+		if (isRayTouchingGround) 
+		{
+			carRB.AddForce (transform.forward * kek);
+		}
 	}
 
 	float RealisticVelocity(float speed) {
@@ -98,7 +107,7 @@ public class CarEngine : MonoBehaviour
 		Physics.Raycast (x, y, out hit, z);
 		Debug.DrawRay (x, y, Color.yellow);
 
-		if (hit.collider.tag == "Ramp") 
+		if (hit.collider != null && hit.collider.tag == "Ramp") 
 		{
 			isRayTouchingGround = true;
 		} 

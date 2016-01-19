@@ -35,6 +35,8 @@ public class GoalHandler : MonoBehaviour
 	
 	private void OnTriggerEnter(Collider other) 
 	{
+		Debug.Log ("TRIGGERED");
+
 		if (other.name.ToLower ().Contains ("player")) 
 		{
 			var hasGoneThroughAllCheckpoints = true;

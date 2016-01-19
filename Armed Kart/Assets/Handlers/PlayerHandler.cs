@@ -7,6 +7,11 @@ using System.Linq;
 
 using ArmedKart.Utilities;
 
+/// <summary>
+/// Obsoleted and deprecated.
+/// DO NOT USE
+/// USE CAR ENGINE
+/// </summary>
 public class PlayerHandler : MonoBehaviour 
 {
 	const int ROTATION_MULTIPLIER = 100;
