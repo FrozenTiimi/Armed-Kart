@@ -18,21 +18,21 @@ public class CarEngine : MonoBehaviour
 	void Start () 
 	{
 		carRB = GetComponent<Rigidbody> ();
-		carRB.centerOfMass = new Vector3 (-1, 0, -2);
+		carRB.centerOfMass = new Vector3 (0, 0, -1);
 		originalSpeed = moveSpeed;
 		boundY = GetComponentInChildren<MeshCollider> ().bounds.extents.y;
 	}
 	
-	// Update is called once per frame
+	// Update is called once per framef
 	void Update ()
 	{
+		Debug.Log (carRB.velocity);
 		var rotateMovement = rotateSpeed / (moveSpeed % rotateSpeed);
-
+        
 		RaycastHit hit;
-		this.isRayTouchingGround = !IsGrounded ();
+		IsGrounded ();
 
 		if (isRayTouchingGround)
-
 			Debug.Log ("ON GROUND!!!" + carRB.position);
 		else
 			Debug.Log ("NOT ON GROUND!!!" + carRB.position);
@@ -44,7 +44,7 @@ public class CarEngine : MonoBehaviour
 			{
 				transform.Rotate (0, -rotateSpeed * Time.fixedDeltaTime, 0);
 				if (moveSpeed == originalSpeed) {
-					moveSpeed = (moveSpeed / 2);
+					moveSpeed = (moveSpeed * 0.98f);
 				}
 			}
 
@@ -53,7 +53,7 @@ public class CarEngine : MonoBehaviour
 				transform.Rotate (0, rotateSpeed * Time.fixedDeltaTime, 0);
 				if (moveSpeed == originalSpeed) 
 				{
-					moveSpeed = (moveSpeed / 2);
+					moveSpeed = (moveSpeed * 0.98f);
 				}
 
 			} 
@@ -75,9 +75,8 @@ public class CarEngine : MonoBehaviour
 		}		
 	}
 
-	void LateUpdate() {
-		carRB.angularVelocity = carRB.angularVelocity * 0.01f;
-
+	void LateUpdate() 
+	{
 		var kek = RealisticVelocity(moveSpeed) * Time.fixedDeltaTime;
 		if (isRayTouchingGround) 
 		{
@@ -85,7 +84,8 @@ public class CarEngine : MonoBehaviour
 		}
 	}
 
-	float RealisticVelocity(float speed) {
+	float RealisticVelocity(float speed) 
+	{
 		return speed * 6f;
 	}
 
@@ -98,8 +98,8 @@ public class CarEngine : MonoBehaviour
 
 	bool IsGrounded() 
 	{
-		var x = new Vector3(transform.position.x, transform.position.y - (transform.lossyScale.y / 2), transform.position.z);
-		var y = Quaternion.AngleAxis(GetAngle (), transform.forward * -1) * transform.forward;
+		var x = new Vector3(transform.position.x, transform.position.y - (transform.lossyScale.y / 10), transform.position.z);
+		var y = Quaternion.AngleAxis(GetAngle (), transform.right * -1) * transform.forward;
 		var z = 10;
 
 		RaycastHit hit;
