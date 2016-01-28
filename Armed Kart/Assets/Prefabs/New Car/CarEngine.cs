@@ -28,7 +28,7 @@ public class CarEngine : MonoBehaviour
 	void Update ()
 	{
 		var rotateMovement = rotateSpeed / (moveSpeed % rotateSpeed);
-		Debug.Log (moveSpeed);
+		//Debug.Log (moveSpeed);
 		RaycastHit hit;
 		IsGrounded ();
 
@@ -65,7 +65,7 @@ public class CarEngine : MonoBehaviour
 		if (isRayTouchingGround) 
 		{			
 			carRB.AddForce (transform.forward * kek);
-			Debug.Log (carRB.velocity.magnitude);
+			//Debug.Log (carRB.velocity.magnitude);
 
 			if(carRB.velocity.magnitude > maxVelo)
 			{
