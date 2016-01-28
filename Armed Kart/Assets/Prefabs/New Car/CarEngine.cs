@@ -4,13 +4,15 @@ using System.Linq;
 
 public class CarEngine : MonoBehaviour 
 {
-	public float moveSpeed;
-	public float rotateSpeed;
+	//Movement mechanics
+	public float moveSpeed; // Recommended is 2000+
+	public float rotateSpeed; // Recommended is 30-60
+	public float maxVelo; // Recommended is 100-200
 
 	//Here we store the original movement/rotation speed that is set individually for every car before runtime.
 	private float originalSpeed;
 
-	private float boundY;
+	//tools to check if grounded
 	private bool isRayTouchingGround;
 	private Rigidbody carRB;
 
@@ -20,22 +22,15 @@ public class CarEngine : MonoBehaviour
 		carRB = GetComponent<Rigidbody> ();
 		carRB.centerOfMass = new Vector3 (0, 0, -1);
 		originalSpeed = moveSpeed;
-		boundY = GetComponentInChildren<MeshCollider> ().bounds.extents.y;
 	}
 	
 	// Update is called once per framef
 	void Update ()
 	{
-		Debug.Log (carRB.velocity);
 		var rotateMovement = rotateSpeed / (moveSpeed % rotateSpeed);
-        
+		Debug.Log (moveSpeed);
 		RaycastHit hit;
 		IsGrounded ();
-
-		if (isRayTouchingGround)
-			Debug.Log ("ON GROUND!!!" + carRB.position);
-		else
-			Debug.Log ("NOT ON GROUND!!!" + carRB.position);
 
 		//Turning
 		if (isRayTouchingGround) 
@@ -61,17 +56,7 @@ public class CarEngine : MonoBehaviour
 			{
 				moveSpeed = originalSpeed;
 			}
-			
-			if(Input.GetKey(KeyCode.S))
-			{
-				carRB.velocity = carRB.velocity * 0.99f;
-			}
-			if(Input.GetKey (KeyCode.LeftShift))
-			{
-				moveSpeed += moveSpeed/4;
-			}
-			else
-				moveSpeed = originalSpeed;
+
 		}		
 	}
 
@@ -79,8 +64,15 @@ public class CarEngine : MonoBehaviour
 	{
 		var kek = RealisticVelocity(moveSpeed) * Time.fixedDeltaTime;
 		if (isRayTouchingGround) 
-		{
+		{			
 			carRB.AddForce (transform.forward * kek);
+			Debug.Log (carRB.velocity.magnitude);
+			if(carRB.velocity.magnitude > maxVelo)
+			{
+				Vector3 tempVelo = carRB.velocity;
+				tempVelo.Normalize();
+				carRB.velocity = tempVelo * maxVelo;
+			}
 		}
 	}
 
