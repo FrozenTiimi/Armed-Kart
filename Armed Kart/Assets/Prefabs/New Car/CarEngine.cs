@@ -39,7 +39,7 @@ public class CarEngine : MonoBehaviour
 			{
 				transform.Rotate (0, -rotateSpeed * Time.fixedDeltaTime, 0);
 				if (moveSpeed == originalSpeed) {
-					moveSpeed = (moveSpeed * 0.98f);
+					moveSpeed = (moveSpeed / 2);
 				}
 			}
 
@@ -48,15 +48,14 @@ public class CarEngine : MonoBehaviour
 				transform.Rotate (0, rotateSpeed * Time.fixedDeltaTime, 0);
 				if (moveSpeed == originalSpeed) 
 				{
-					moveSpeed = (moveSpeed * 0.98f);
+					moveSpeed = (moveSpeed / 2);
 				}
-
 			} 
+
 			else 
 			{
 				moveSpeed = originalSpeed;
 			}
-
 		}		
 	}
 
@@ -67,6 +66,7 @@ public class CarEngine : MonoBehaviour
 		{			
 			carRB.AddForce (transform.forward * kek);
 			Debug.Log (carRB.velocity.magnitude);
+
 			if(carRB.velocity.magnitude > maxVelo)
 			{
 				Vector3 tempVelo = carRB.velocity;
