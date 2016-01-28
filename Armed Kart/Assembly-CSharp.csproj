@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Editors\GoalEditor.cs" />
+     <Compile Include="Assets\Handlers\AIEngine.cs" />
      <Compile Include="Assets\Handlers\AIHandler.cs" />
      <Compile Include="Assets\Handlers\ApplicationModel.cs" />
      <Compile Include="Assets\Handlers\BasicEntityHandler.cs" />

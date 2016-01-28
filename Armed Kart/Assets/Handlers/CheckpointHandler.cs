@@ -14,8 +14,12 @@ public class CheckpointHandler : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.name.ToLower().Contains ("player"))
+		if (other.name.ToLower().Contains ("player") || other.CompareTag("AIPlayer"))
 		{
+			if (other.tag == "AIPlayer") 
+			{
+				other.SendMessage("SetTargetCheckpoint", 
+			}
 			if (!CheckpointTriggered.Contains (other.name))
 				CheckpointTriggered.Add (other.name);
 		}

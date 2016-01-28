@@ -38,7 +38,8 @@ public class CarEngine : MonoBehaviour
 			if (Input.GetKey ("a")) 
 			{
 				transform.Rotate (0, -rotateSpeed * Time.fixedDeltaTime, 0);
-				if (moveSpeed == originalSpeed) {
+				if (moveSpeed == originalSpeed) 
+				{
 					moveSpeed = (moveSpeed / 2);
 				}
 			}
