@@ -126,7 +126,7 @@ public class GUIHandler : MonoBehaviour
 		}
 
 		// Draw the minimap
-		GUI.DrawTexture (new Rect (Screen.width - 200, Screen.height - 200, 175, 175), Minicam);
+		GUI.DrawTexture (new Rect (Screen.width - 200, Screen.height - 400, 175, 175), Minicam);
 	}
 
 	private void ShowRaceFinishedScreen()
