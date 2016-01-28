@@ -14,10 +14,10 @@ public class CheckpointHandler : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.name.ToLower().Contains ("player"))
+		if (other.transform.parent.name.ToLower ().Contains ("player")) 
 		{
-			if (!CheckpointTriggered.Contains (other.name))
-				CheckpointTriggered.Add (other.name);
+			if (!CheckpointTriggered.Contains (other.transform.parent.name))
+				CheckpointTriggered.Add (other.transform.parent.name);
 		}
 	}
 

@@ -33,31 +33,30 @@ public class GoalHandler : MonoBehaviour
 	}
 	#endif
 	
-	private void OnTriggerEnter(Collider other) 
+	private void OnTriggerExit(Collider other) 
 	{
-		Debug.Log ("TRIGGERED");
-
-		if (other.name.ToLower ().Contains ("player")) 
+		if (other.transform.parent.tag.ToLower ().Contains ("player")) 
 		{
+			var otherName = other.transform.parent.name;
 			var hasGoneThroughAllCheckpoints = true;
 
-			if (Timers.ContainsKey(other.name))
+			if (Timers.ContainsKey(otherName))
 			{
-				var timer = Timers[other.name];
+				var timer = Timers[otherName];
 
 				if (timer.IsRunning)
 				{
 					timer.Stop ();
 
 					// Increment lap amount
-					if (!LapsDone.ContainsKey (other.name))
-						LapsDone.Add(other.name, 0);
+					if (!LapsDone.ContainsKey (otherName))
+						LapsDone.Add(otherName, 0);
 
-					LapsDone[other.name]++;
+					LapsDone[otherName]++;
 
 					for (var i = 0; i < transform.childCount; i++)
 					{
-						if (!transform.GetChild (i).GetComponent<CheckpointHandler>().GetHasTriggeredCheckpoint(other.name))
+						if (!transform.GetChild (i).GetComponent<CheckpointHandler>().GetHasTriggeredCheckpoint(otherName))
 						{
 							hasGoneThroughAllCheckpoints = false;
 							break;
@@ -66,28 +65,29 @@ public class GoalHandler : MonoBehaviour
 
 					if (!hasGoneThroughAllCheckpoints)
 					{
-						Debug.Log(string.Format ("Player {0} has not gone through all the checkpoints!\nWhat a cheater!", other.name));
+						Debug.Log(string.Format ("Player {0} has not gone through all the checkpoints!\nWhat a cheater!", otherName));
 					}
 					else
 					{
 						for (var i = 0; i < transform.childCount; i++)
 						{
-							transform.GetChild (i).GetComponent<CheckpointHandler>().RemovePlayerFromList(other.name);
+							transform.GetChild (i).GetComponent<CheckpointHandler>().RemovePlayerFromList(otherName);
 						}
 
-						Debug.Log ("Lap Finished! Time for " + other.name + ": " + GetCurrentElapsedLapTime(other.name) + " seconds");
+						Debug.Log ("Lap Finished! Time for " + otherName + ": " + GetCurrentElapsedLapTime(otherName) + " seconds");
 						
 						timer.Reset ();
 						
-						if (LapsDone[other.name] >= NumberOfLaps)
+						if (LapsDone[otherName] >= NumberOfLaps)
 						{
-							other.transform.GetComponent<PlayerHandler>().FinishRace();
+							//other.transform.GetComponent<PlayerHandler>().FinishRace();
+							Debug.Log ("Congratulations! You've won the race!\nSadly though, we don't have any finish race method in our Car Engine script! MAKE IT!");
 						}
 						else
 						{
 							timer.Start ();
 							
-							Debug.Log ("New lap started for player " + other.name + "!");
+							Debug.Log ("New lap started for player " + otherName + "!");
 						}
 					}
 				}
@@ -95,7 +95,7 @@ public class GoalHandler : MonoBehaviour
 				{
 					for (var i = 0; i < transform.childCount; i++)
 					{
-						if (!transform.GetChild (i).GetComponent<CheckpointHandler>().GetHasTriggeredCheckpoint(other.name))
+						if (!transform.GetChild (i).GetComponent<CheckpointHandler>().GetHasTriggeredCheckpoint(otherName))
 						{
 							hasGoneThroughAllCheckpoints = false;
 							break;
@@ -104,24 +104,24 @@ public class GoalHandler : MonoBehaviour
 
 					if (!hasGoneThroughAllCheckpoints)
 					{
-						Debug.Log(string.Format ("Player {0} has not gone through all the checkpoints!\nWhat a cheater!", other.name));
+						Debug.Log(string.Format ("Player {0} has not gone through all the checkpoints!\nWhat a cheater!", otherName));
 					}
 					else
 					{
 						timer.Reset ();
 						timer.Start();
 						
-						Debug.Log ("New lap started for player " + other.name + "!");
+						Debug.Log ("New lap started for player " + otherName + "!");
 					}
 				}
 			}
 			else
 			{
-				Timers.Add (other.name, new System.Diagnostics.Stopwatch());
+				Timers.Add (otherName, new System.Diagnostics.Stopwatch());
 
-				Timers[other.name].Start ();
+				Timers[otherName].Start ();
 
-				Debug.Log ("First lap started for player " + other.name + "!");
+				Debug.Log ("First lap started for player " + otherName + "!");
 			}
 		}
 	}
