@@ -12,7 +12,7 @@ public class GoalHandler : MonoBehaviour
 	private Dictionary<string, int> LapsDone = new Dictionary<string, int>();
 	private Dictionary<string, System.Diagnostics.Stopwatch> Timers = new Dictionary<string, System.Diagnostics.Stopwatch>();
 
-	/*#if UNITY_EDITOR
+	#if UNITY_EDITOR
 	private bool ShowLapWarning = true;
 
 	public void ShowEditGUI() {
@@ -31,7 +31,7 @@ public class GoalHandler : MonoBehaviour
 				ShowLapWarning = false;
 		}
 	}
-	#endif*/
+	#endif
 	
 	private void OnTriggerEnter(Collider other) 
 	{

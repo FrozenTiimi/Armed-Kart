@@ -28,13 +28,13 @@ public class CarEngine : MonoBehaviour
 	void Update ()
 	{
 		var rotateMovement = rotateSpeed / (moveSpeed % rotateSpeed);
-		//Debug.Log (moveSpeed);
 		RaycastHit hit;
 		IsGrounded ();
 
 		//Turning
 		if (isRayTouchingGround) 
 		{
+			Debug.Log ("Grounded");
 			if (Input.GetKey ("a")) 
 			{
 				transform.Rotate (0, -rotateSpeed * Time.fixedDeltaTime, 0);
@@ -62,11 +62,12 @@ public class CarEngine : MonoBehaviour
 
 	void LateUpdate() 
 	{
-		var kek = RealisticVelocity(moveSpeed) * Time.fixedDeltaTime;
+		var kek = RealisticVelocity(moveSpeed) * Time.deltaTime;
 		if (isRayTouchingGround) 
 		{			
-			carRB.AddForce (transform.forward * kek);
-			//Debug.Log (carRB.velocity.magnitude);
+			Debug.Log ("Should be moving");
+			carRB.AddForce (transform.forward * moveSpeed * Time.fixedDeltaTime * kek);
+			Debug.Log (carRB.velocity.magnitude);
 
 			if(carRB.velocity.magnitude > maxVelo)
 			{
