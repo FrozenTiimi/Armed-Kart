@@ -12,12 +12,23 @@ public class CheckpointHandler : MonoBehaviour
 		CheckpointTriggered.Remove (playerName);
 	}
 
-	private void OnTriggerEnter(Collider other)
+	void OnTriggerEnter(Collider other)
 	{
+<<<<<<< HEAD
 		if (other.transform.parent.name.ToLower ().Contains ("player")) 
 		{
 			if (!CheckpointTriggered.Contains (other.transform.parent.name))
 				CheckpointTriggered.Add (other.transform.parent.name);
+=======
+		if (other.name.ToLower().Contains ("player") || other.CompareTag("AIPlayer"))
+		{
+			if (other.tag == "AIPlayer") 
+			{
+				other.SendMessage("SetTargetCheckpoint"); 
+			}
+			if (!CheckpointTriggered.Contains (other.name))
+				CheckpointTriggered.Add (other.name);
+>>>>>>> 3e51154855c95c8e40ac7f8cb7b45e4b5dd694ea
 		}
 	}
 

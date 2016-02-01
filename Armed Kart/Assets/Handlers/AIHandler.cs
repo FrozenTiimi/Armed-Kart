@@ -6,133 +6,112 @@ using System.Linq;
 
 public class AIHandler : MonoBehaviour 
 {
-	private CharacterController Player { get; set; }
-
-	public CarTypes CarType;
+	//Movement mechanics
+	public float moveSpeed; // Recommended is 2000+
+	public float rotateSpeed; // Recommended is 30-60
+	public float maxVelo; // Recommended is 100-200
+	
+	//Here we store the original movement/rotation speed that is set individually for every car before runtime.
+	private float originalSpeed;
+	
+	//tools to check if grounded
+	private bool isRayTouchingGround;
+	private Rigidbody carRB;
+	
 
 	// Use this for initialization
-	private void Start () 
+	void Start () 
 	{
+		carRB = GetComponent<Rigidbody> ();
+		carRB.centerOfMass = new Vector3 (0, 0, -1);
+		originalSpeed = moveSpeed;
 	}
 	
-	// Update is called once per frame
-	private void Update () 
+	// Update is called once per framef
+	void Update ()
 	{
-		this.Player = GetComponent<CharacterController> ();
-
-		this.HandleAIRotation ();
-		this.HandleAIMovement ();
-	}
-
-	private void LateUpdate()
-	{
-
-	}
-
-	private System.Random DoubleGuess = new System.Random();
-	private System.Random IntGuess = new System.Random();
-
-	private GameObject CurrentCheckpoint;
-	private int CurrentCheckpointID;
-	private GameObject[] CheckPoints;
-
-	private void HandleAIRotation()
-	{
-		/*
-		float randFloat = (float)DoubleGuess.NextDouble () * 4;
-
-		if (IntGuess.Next (0, 10) > 5) 
-			randFloat *= -1;
-
-		if (MustMove) 
-			randFloat *= -1;
-
-		transform.Rotate (new Vector3 (0, randFloat, 0));
-
-		if (MustMove)
-			transform.Rotate (new Vector3 (0, randFloat, 0));
-			*/
-
-		var otherPlayer = GameObject.Find ("NewPlayer");
-		var testTerrain = GameObject.Find ("TestTerrain");
-
-		if (this.CheckPoints == null) 
+		var rotateMovement = rotateSpeed / (moveSpeed % rotateSpeed);
+		//Debug.Log (moveSpeed);
+		RaycastHit hit;
+		IsGrounded ();
+		
+		//Turning
+		if (isRayTouchingGround) 
 		{
-			this.CheckPoints = GameObject.FindGameObjectsWithTag ("checkpoint");
-			this.CheckPoints = this.CheckPoints.ToList<GameObject>().OrderBy(g => int.Parse (g.name.Substring(10, g.name.Length - 10))).ToArray();
-		}
-
-		if (CurrentCheckpoint == null) 
-		{
-			this.CurrentCheckpointID = 0;
-			CurrentCheckpoint = this.CheckPoints [this.CurrentCheckpointID];
-			Debug.Log (this.CurrentCheckpoint.name);
-		}
-
-		ArtificialLookAt (this.CurrentCheckpoint.transform.position);
-		//var model = transform.FindChild ("Model");
-		//transform.LookAt (this.CurrentCheckpoint.transform.position);
-
-		Debug.DrawRay (transform.position, (this.CurrentCheckpoint.transform.position - transform.position), Color.blue);
-		//Debug.DrawRay (transform.position, V
-
+			if (Input.GetKey ("a")) 
+			{
+				transform.Rotate (0, -rotateSpeed * Time.fixedDeltaTime, 0);
+				if (moveSpeed == originalSpeed) 
+				{
+					moveSpeed = (moveSpeed / 2);
+				}
+			}
+			
+			if (Input.GetKey ("d")) 
+			{
+				transform.Rotate (0, rotateSpeed * Time.fixedDeltaTime, 0);
+				if (moveSpeed == originalSpeed) 
+				{
+					moveSpeed = (moveSpeed / 2);
+				}
+			} 
+			
+			else 
+			{
+				moveSpeed = originalSpeed;
+			}
+		}		
 	}
-
-	private void HandleAIMovement()
+	
+	void LateUpdate() 
 	{
-		var speed = new Vector3 (0, 0, 60);
-		speed = transform.rotation * speed;
-
-		this.Player.Move (speed * Time.deltaTime);
-
-		if ((this.Player.transform.position.x > this.CurrentCheckpoint.transform.position.x - 5 && this.Player.transform.position.z > this.CurrentCheckpoint.transform.position.z - 5) &&
-			(this.Player.transform.position.x < this.CurrentCheckpoint.transform.position.x + 5 && this.Player.transform.position.z < this.CurrentCheckpoint.transform.position.z + 5)) 
-		{
-			if (this.CurrentCheckpointID + 1 >= this.CheckPoints.Length)
-				this.CurrentCheckpointID = 0;
-			else
-				this.CurrentCheckpointID++;
-
-			this.CurrentCheckpoint = this.CheckPoints[this.CurrentCheckpointID];
+		var kek = RealisticVelocity(moveSpeed) * Time.fixedDeltaTime;
+		if (isRayTouchingGround) 
+		{			
+			carRB.AddForce (transform.forward * kek);
+			//Debug.Log (carRB.velocity.magnitude);
+			
+			if(carRB.velocity.magnitude > maxVelo)
+			{
+				Vector3 tempVelo = carRB.velocity;
+				tempVelo.Normalize();
+				carRB.velocity = tempVelo * maxVelo;
+			}
 		}
 	}
-
-	private void ArtificialLookAt(Vector3 at)
+	
+	float RealisticVelocity(float speed) 
 	{
-		var corner = 0f;
-		var cornerDegrees = 0f;
-
-		var heading = at - transform.position;
-		var length = heading.magnitude;
-		var xN = heading.x;
-		var zN = heading.z;
-
-		corner = Mathf.Tan (xN / zN);
-		cornerDegrees = corner * Mathf.Rad2Deg;
-
-		// SPAM!!! Debug.Log (cornerDegrees);
-
-		var rot = Quaternion.LookRotation (heading);
-		transform.rotation = rot;
-
-		if (corner > 0) 
+		return speed * 6f;
+	}
+	
+	float GetAngle() {
+		Vector3 dir = new Vector3(-1, -1, 0);
+		dir = transform.TransformDirection(dir);
+		float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+		return angle;
+	}
+	
+	bool IsGrounded() 
+	{
+		var x = new Vector3(transform.position.x, transform.position.y - (transform.lossyScale.y / 10), transform.position.z);
+		var y = Quaternion.AngleAxis(GetAngle (), transform.right * -1) * transform.forward;
+		var z = 10;
+		
+		RaycastHit hit;
+		
+		Physics.Raycast (x, y, out hit, z);
+		Debug.DrawRay (x, y, Color.yellow);
+		
+		if (hit.collider != null && hit.collider.tag == "Ramp") 
 		{
-			transform.FindChild("Model").transform.Rotate(Vector3.back, corner);
+			isRayTouchingGround = true;
+		} 
+		else 
+		{
+			isRayTouchingGround = false;
+			moveSpeed /= 1.25f;
 		}
-	}
-
-	private void OnCollisionEnter(Collision other)
-	{
-	}
-
-	private void OnCollisionStay(Collision other)
-	{
-
-	}
-
-	private float RadToDeg(float value)
-	{
-		//return value;
-		return (value) / (Mathf.PI * 180);
+		return isRayTouchingGround;
 	}
 }
