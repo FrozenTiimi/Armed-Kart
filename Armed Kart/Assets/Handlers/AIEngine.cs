@@ -5,7 +5,7 @@ using System.Linq;
 
 public class AIEngine : MonoBehaviour 
 {
-	public Transform[] checkPoints;
+	private List<GameObject> AICheckpoints;
 
 	private NavMeshAgent nmAgent;
 	private Rigidbody aiRB;
@@ -13,12 +13,16 @@ public class AIEngine : MonoBehaviour
 	private Transform targetCheckpoint;
 	private int checkPointIndex;
 	public float moveSpeed;
+	private Transform destination;
 
 	// Use this for initialization
 	void Start () 
 	{
-		nmAgent = GetComponent<NavMeshAgent> ();
+		nmAgent = GetComponentInChildren<NavMeshAgent> ();
 		aiRB = GetComponent<Rigidbody> ();
+
+		this.AICheckpoints = GameObject.FindGameObjectsWithTag ("checkpoint").ToList ();
+		targetCheckpoint = this.AICheckpoints.First ().transform;
 	}
 	
 	// Update is called once per frame
@@ -27,7 +31,9 @@ public class AIEngine : MonoBehaviour
 		//this.player = FindClosestPlayer ();
 
 		nmAgent.destination = targetCheckpoint.position;
+		//transform.LookAt (targetCheckpoint.position);
 		aiRB.AddForce ((transform.forward * RealisticVelocity(moveSpeed))*Time.fixedDeltaTime);
+		Debug.Log (nmAgent.destination);
 	}
 
 	float RealisticVelocity(float speed) 
@@ -35,17 +41,19 @@ public class AIEngine : MonoBehaviour
 		return speed * 3f;
 	}
 
-	void SetTargetCheckpoint()
+
+	public void SetTargetCheckpoint()
 	{
-		if (checkPointIndex > checkPoints.Length) 
+		if (checkPointIndex > AICheckpoints.Count) 
 		{
 			checkPointIndex = 0;
 		} 
 		else 
 			checkPointIndex++;
 
-		targetCheckpoint = checkPoints [checkPointIndex];
+		targetCheckpoint = AICheckpoints [checkPointIndex].transform;
 	}
+
 
 	/*Transform FindClosestPlayer() 
 	{

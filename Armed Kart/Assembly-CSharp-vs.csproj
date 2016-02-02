@@ -46,7 +46,6 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Editors\GoalEditor.cs" />
      <Compile Include="Assets\Handlers\AIEngine.cs" />
      <Compile Include="Assets\Handlers\AIHandler.cs" />
      <Compile Include="Assets\Handlers\ApplicationModel.cs" />
@@ -68,6 +67,7 @@
      <Compile Include="Assets\Handlers\Utilities\MathUtils.cs" />
      <Compile Include="Assets\Prefabs\New Car\CarEngine.cs" />
      <Compile Include="Assets\Prefabs\New Car\WheelManager.cs" />
+     <Compile Include="Assets\TerrainHandler.cs" />
      <None Include="Assets\Standard Assets\Environment\Water\Water4\Shaders\FXWater4Simple.shader" />
      <None Include="Assets\Standard Assets\Environment\Water\Water\Shaders\FXWaterPro.shader" />
      <None Include="Assets\Standard Assets\Environment\Water\Water4\Shaders\WaterInclude.cginc" />

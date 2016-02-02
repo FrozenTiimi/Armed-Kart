@@ -7,32 +7,11 @@ using UnityEditor;
 
 public class GoalHandler : MonoBehaviour 
 {
-	[SerializeField] private int NumberOfLaps;
+	public int NumberOfLaps;
 
 	private Dictionary<string, int> LapsDone = new Dictionary<string, int>();
 	private Dictionary<string, System.Diagnostics.Stopwatch> Timers = new Dictionary<string, System.Diagnostics.Stopwatch>();
 
-	#if UNITY_EDITOR
-	private bool ShowLapWarning = true;
-
-	public void ShowEditGUI() {
-		NumberOfLaps = EditorGUILayout.IntField("Amount of laps: ", NumberOfLaps);
-
-		if (NumberOfLaps < 1) 
-		{
-			NumberOfLaps = 3;
-			EditorUtility.DisplayDialog ("Maximum number of laps too low!", "The maximum number of laps can't be negative, or 0!", "OK, reset to 3");
-		} 
-		else if (NumberOfLaps > 100 && ShowLapWarning) 
-		{
-			if (!EditorUtility.DisplayDialog ("You sure about this?", "Over 100 laps? Are you reeeeaaaallly sure?", "Yes, let me have fun! :-(", "No, reset to 3"))
-				NumberOfLaps = 3;
-			else
-				ShowLapWarning = false;
-		}
-	}
-	#endif
-	
 	private void OnTriggerExit(Collider other) 
 	{
 		if (other.transform.parent.tag.ToLower ().Contains ("player")) 
@@ -77,11 +56,10 @@ public class GoalHandler : MonoBehaviour
 						Debug.Log ("Lap Finished! Time for " + otherName + ": " + GetCurrentElapsedLapTime(otherName) + " seconds");
 						
 						timer.Reset ();
-						
-						if (LapsDone[otherName] >= NumberOfLaps)
+
+						if (LapsDone[otherName] >= NumberOfLaps - 1)
 						{
-							//other.transform.GetComponent<PlayerHandler>().FinishRace();
-							Debug.Log ("Congratulations! You've won the race!\nSadly though, we don't have any finish race method in our Car Engine script! MAKE IT!");
+							other.transform.parent.GetComponent<CarEngine>().FinishRace ();
 						}
 						else
 						{

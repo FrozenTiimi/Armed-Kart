@@ -16,64 +16,138 @@ public class CarEngine : MonoBehaviour
 	private bool isRayTouchingGround;
 	private Rigidbody carRB;
 
+	private bool LeftDown = false;
+	private bool RightDown = false;
+
+	private Vector3 LastPosition { get; set; }
+	private Quaternion LastRotation { get; set; }
+
+	private bool RaceFinished = false;
+
 	// Use this for initialization
 	void Start () 
 	{
 		carRB = GetComponent<Rigidbody> ();
 		carRB.centerOfMass = new Vector3 (0, 0, -1);
 		originalSpeed = moveSpeed;
+
+		this.LastPosition = transform.position;
+		this.LastRotation = transform.rotation;
 	}
 	
 	// Update is called once per framef
 	void Update ()
 	{
-		var rotateMovement = rotateSpeed / (moveSpeed % rotateSpeed);
-		RaycastHit hit;
-		IsGrounded ();
-
-		//Turning
-		if (isRayTouchingGround) 
+		if (!this.RaceFinished) 
 		{
-			Debug.Log ("Grounded");
-			if (Input.GetKey ("a")) 
+			var rotateMovement = rotateSpeed / (moveSpeed % rotateSpeed);
+			RaycastHit hit;
+			IsGrounded ();
+			
+			//Turning
+			if (isRayTouchingGround) 
 			{
-				transform.Rotate (0, -rotateSpeed * Time.fixedDeltaTime, 0);
-				if (moveSpeed == originalSpeed) 
+				if (Input.GetKey ("a")) 
 				{
-					moveSpeed = (moveSpeed / 2);
+					transform.Rotate (0, -rotateSpeed * Time.fixedDeltaTime, 0);
+					if (moveSpeed == originalSpeed) 
+					{
+						moveSpeed = (moveSpeed / 2);
+					}
+				}
+				else if (this.LeftDown)
+				{
+					this.MoveLeft();
+				}
+				
+				if (Input.GetKey ("d")) 
+				{
+					transform.Rotate (0, rotateSpeed * Time.fixedDeltaTime, 0);
+					if (moveSpeed == originalSpeed) 
+					{
+						moveSpeed = (moveSpeed / 2);
+					}
+				} 
+				else if (this.RightDown)
+				{
+					this.MoveRight();
+				}
+				
+				else 
+				{
+					moveSpeed = originalSpeed;
 				}
 			}
+		}
+	}
 
-			if (Input.GetKey ("d")) 
-			{
-				transform.Rotate (0, rotateSpeed * Time.fixedDeltaTime, 0);
-				if (moveSpeed == originalSpeed) 
-				{
-					moveSpeed = (moveSpeed / 2);
-				}
-			} 
+	private void MoveLeft()
+	{
+		var rotateMovement = rotateSpeed / (moveSpeed % rotateSpeed);
+		rotateMovement /= 2;
 
-			else 
-			{
-				moveSpeed = originalSpeed;
-			}
-		}		
+		transform.Rotate (0, rotateSpeed * Time.fixedDeltaTime, 0);
+		if (moveSpeed == originalSpeed) 
+		{
+			moveSpeed = (moveSpeed / 2);
+		}
+	}
+
+	private void MoveRight()
+	{
+		var rotateMovement = rotateSpeed / (moveSpeed % rotateSpeed);
+		rotateMovement /= 2;
+
+		transform.Rotate (0, -rotateSpeed * Time.fixedDeltaTime, 0);
+		if (moveSpeed == originalSpeed) 
+		{
+			moveSpeed = (moveSpeed / 2);
+		}
+	}
+
+	public void FinishRace()
+	{
+		this.RaceFinished = true;
+	}
+
+	public void ChangeLeft(bool value)
+	{
+		this.LeftDown = value;
+	}
+
+	public void ChangeRight(bool value)
+	{
+		this.RightDown = value;
+	}
+
+	public void Reset() 
+	{
+		this.transform.position = this.LastPosition;
+		this.transform.rotation = this.LastRotation;
+		carRB.velocity = Vector3.zero;
+	}
+
+	public void UpdateLast()
+	{
+		this.LastPosition = transform.position;
+		this.LastRotation = transform.rotation;
 	}
 
 	void LateUpdate() 
 	{
-		var kek = RealisticVelocity(moveSpeed) * Time.deltaTime;
-		if (isRayTouchingGround) 
-		{			
-			Debug.Log ("Should be moving");
-			carRB.AddForce (transform.forward * moveSpeed * Time.fixedDeltaTime * kek);
-			Debug.Log (carRB.velocity.magnitude);
-
-			if(carRB.velocity.magnitude > maxVelo)
-			{
-				Vector3 tempVelo = carRB.velocity;
-				tempVelo.Normalize();
-				carRB.velocity = tempVelo * maxVelo;
+		if (!this.RaceFinished) 
+		{
+			var kek = RealisticVelocity(moveSpeed) * Time.deltaTime;
+			if (isRayTouchingGround) 
+			{			
+				carRB.AddForce (transform.forward * moveSpeed * Time.fixedDeltaTime * kek);
+				
+				if(carRB.velocity.magnitude > maxVelo)
+				{
+					Vector3 tempVelo = carRB.velocity;
+					tempVelo.Normalize();
+					carRB.velocity = tempVelo * maxVelo;
+				}
 			}
 		}
 	}
