@@ -31,7 +31,7 @@ public class AIEngine : MonoBehaviour
 		//this.player = FindClosestPlayer ();
 
 		nmAgent.destination = targetCheckpoint.position;
-		//transform.LookAt (targetCheckpoint.position);
+		transform.LookAt (targetCheckpoint.position);
 		aiRB.AddForce ((transform.forward * RealisticVelocity(moveSpeed))*Time.fixedDeltaTime);
 		Debug.Log (nmAgent.destination);
 	}
