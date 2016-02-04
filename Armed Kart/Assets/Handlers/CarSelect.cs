@@ -3,12 +3,13 @@ using System.Collections;
 
 public class CarSelect : MonoBehaviour 
 {
+	public GameObject carSpot;
 
 	
 	// Use this for initialization
 	void Start () 
 	{
-
+		DontDestroyOnLoad(carSpot);
 	}
 	
 	// Update is called once per frame
@@ -21,11 +22,11 @@ public class CarSelect : MonoBehaviour
 	{
 		if (forward) 
 		{
-			
+			Debug.Log ("Perkeleen huora");
 		} 
-		else 
+		else
 		{
-
+			Debug.Log ("Vittu nyt");
 		}
 	}
 }
