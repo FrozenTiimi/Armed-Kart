@@ -108,6 +108,8 @@ public class CarEngine : MonoBehaviour
 	public void FinishRace()
 	{
 		this.RaceFinished = true;
+
+		Invoke ("LoadMainMenu", 3.0f);
 	}
 
 	public void ChangeLeft(bool value)
@@ -131,6 +133,21 @@ public class CarEngine : MonoBehaviour
 	{
 		this.LastPosition = transform.position;
 		this.LastRotation = transform.rotation;
+	}
+
+	public bool HasFinishedRace()
+	{
+		return this.RaceFinished;
+	}
+
+	public Rigidbody GetRB()
+	{
+		return this.carRB;
+	}
+
+	private void LoadMainMenu()
+	{
+		Application.LoadLevel ("MainMenu");
 	}
 
 	void LateUpdate() 

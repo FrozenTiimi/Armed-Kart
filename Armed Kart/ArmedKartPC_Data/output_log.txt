@@ -1,4 +1,4 @@
-Initialize engine version: 5.1.2f1 (afd2369b692a)
+Initialize engine version: 5.1.1f1 (2046fc06d4d8)
 GfxDevice: creating device client; threaded=1
 Direct3D:
     Version:  Direct3D 11.0 [level 11.0]
@@ -6,19 +6,110 @@ Direct3D:
     Vendor:   NVIDIA
     VRAM:     974 MB
 Begin MonoManager ReloadAssembly
-Platform assembly: K:\Armed-Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine.dll (this message is harmless)
-Loading K:\Armed-Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine.dll into Unity Child Domain
-Platform assembly: K:\Armed-Kart\Armed Kart\ArmedKartPC_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
-Loading K:\Armed-Kart\Armed Kart\ArmedKartPC_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
-Platform assembly: K:\Armed-Kart\Armed Kart\ArmedKartPC_Data\Managed\Assembly-CSharp.dll (this message is harmless)
-Loading K:\Armed-Kart\Armed Kart\ArmedKartPC_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
-Platform assembly: K:\Armed-Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine.UI.dll (this message is harmless)
-Loading K:\Armed-Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
-Platform assembly: K:\Armed-Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
-Loading K:\Armed-Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
-Platform assembly: K:\Armed-Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
-Loading K:\Armed-Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
-- Completed reload, in  2.281 seconds
+Platform assembly: K:\Armed Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading K:\Armed Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: K:\Armed Kart\Armed Kart\ArmedKartPC_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading K:\Armed Kart\Armed Kart\ArmedKartPC_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Platform assembly: K:\Armed Kart\Armed Kart\ArmedKartPC_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading K:\Armed Kart\Armed Kart\ArmedKartPC_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: K:\Armed Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading K:\Armed Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: K:\Armed Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading K:\Armed Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: K:\Armed Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
+Loading K:\Armed Kart\Armed Kart\ArmedKartPC_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
+- Completed reload, in  1.090 seconds
 desktop: 1920x1200 59Hz; virtual: 3200x1200 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
+<RI> Initialized touch support.
+Platform assembly: K:\Armed Kart\Armed Kart\ArmedKartPC_Data\Managed\System.dll (this message is harmless)
+The file 'K:/Armed Kart/Armed Kart/ArmedKartPC_Data/mainData' is corrupted! Remove it and launch unity again!
+[Position out of bounds!]
+ 
+(Filename:  Line: 241)
+
+The file 'K:/Armed Kart/Armed Kart/ArmedKartPC_Data/mainData' is corrupted! Remove it and launch unity again!
+[Position out of bounds!]
+ 
+(Filename:  Line: 241)
+
+The file 'K:/Armed Kart/Armed Kart/ArmedKartPC_Data/mainData' is corrupted! Remove it and launch unity again!
+[Position out of bounds!]
+ 
+(Filename:  Line: 241)
+
+The file 'K:/Armed Kart/Armed Kart/ArmedKartPC_Data/mainData' is corrupted! Remove it and launch unity again!
+[Position out of bounds!]
+ 
+(Filename:  Line: 241)
+
+The file 'K:/Armed Kart/Armed Kart/ArmedKartPC_Data/mainData' is corrupted! Remove it and launch unity again!
+[Position out of bounds!]
+ 
+(Filename:  Line: 241)
+
+The file 'K:/Armed Kart/Armed Kart/ArmedKartPC_Data/mainData' is corrupted! Remove it and launch unity again!
+[Position out of bounds!]
+ 
+(Filename:  Line: 241)
+
+The file 'K:/Armed Kart/Armed Kart/ArmedKartPC_Data/mainData' is corrupted! Remove it and launch unity again!
+[Position out of bounds!]
+ 
+(Filename:  Line: 241)
+
+The file 'K:/Armed Kart/Armed Kart/ArmedKartPC_Data/mainData' is corrupted! Remove it and launch unity again!
+[Position out of bounds!]
+ 
+(Filename:  Line: 241)
+
+The file 'K:/Armed Kart/Armed Kart/ArmedKartPC_Data/mainData' is corrupted! Remove it and launch unity again!
+[Position out of bounds!]
+ 
+(Filename:  Line: 241)
+
+The file 'K:/Armed Kart/Armed Kart/ArmedKartPC_Data/mainData' is corrupted! Remove it and launch unity again!
+[Position out of bounds!]
+ 
+(Filename:  Line: 241)
+
+The file 'K:/Armed Kart/Armed Kart/ArmedKartPC_Data/mainData' is corrupted! Remove it and launch unity again!
+[Position out of bounds!]
+ 
+(Filename:  Line: 241)
+
+The file 'K:/Armed Kart/Armed Kart/ArmedKartPC_Data/mainData' is corrupted! Remove it and launch unity again!
+[Position out of bounds!]
+ 
+(Filename:  Line: 241)
+
+The file 'K:/Armed Kart/Armed Kart/ArmedKartPC_Data/mainData' is corrupted! Remove it and launch unity again!
+[Position out of bounds!]
+ 
+(Filename:  Line: 241)
+
+The file 'K:/Armed Kart/Armed Kart/ArmedKartPC_Data/mainData' is corrupted! Remove it and launch unity again!
+[Position out of bounds!]
+ 
+(Filename:  Line: 241)
+
+The file 'K:/Armed Kart/Armed Kart/ArmedKartPC_Data/mainData' is corrupted! Remove it and launch unity again!
+[Position out of bounds!]
+ 
+(Filename:  Line: 241)
+
+The file 'K:/Armed Kart/Armed Kart/ArmedKartPC_Data/mainData' is corrupted! Remove it and launch unity again!
+[Position out of bounds!]
+ 
+(Filename:  Line: 241)
+
+The file 'K:/Armed Kart/Armed Kart/ArmedKartPC_Data/mainData' is corrupted! Remove it and launch unity again!
+[Position out of bounds!]
+ 
+(Filename:  Line: 241)
+
+Platform assembly: K:\Armed Kart\Armed Kart\ArmedKartPC_Data\Managed\System.Core.dll (this message is harmless)
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: 1abc -> priority: 1 
+  Thread -> id: 18a4 -> priority: 1 

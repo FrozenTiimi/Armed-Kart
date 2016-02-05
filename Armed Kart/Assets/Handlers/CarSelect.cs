@@ -22,11 +22,11 @@ public class CarSelect : MonoBehaviour
 	{
 		if (forward) 
 		{
-			Debug.Log ("Perkeleen huora");
+
 		} 
 		else
 		{
-			Debug.Log ("Vittu nyt");
+	
 		}
 	}
 }

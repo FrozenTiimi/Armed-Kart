@@ -33,7 +33,7 @@ public class AIEngine : MonoBehaviour
 		nmAgent.destination = targetCheckpoint.position;
 		transform.LookAt (targetCheckpoint.position);
 		aiRB.AddForce ((transform.forward * RealisticVelocity(moveSpeed))*Time.fixedDeltaTime);
-		Debug.Log (nmAgent.destination);
+		//Debug.Log (nmAgent.destination);
 	}
 
 	float RealisticVelocity(float speed) 

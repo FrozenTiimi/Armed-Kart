@@ -11,8 +11,6 @@ public class GUIHandler : MonoBehaviour
 	/// </summary>
 	public RenderTexture Minicam;
 
-	private PlayerHandler pHandler { get { return transform.parent.GetComponent<PlayerHandler>(); } }
-
 	private bool ShowDebugGUI { get; set; }
 	private bool RaceFinishedScreenShown { get; set; }
 	private bool StopShowingRaceFinishedTexts { get; set; }
@@ -44,18 +42,6 @@ public class GUIHandler : MonoBehaviour
 	{
 		var gS = new GUIStyle ();
 		gS.normal.textColor = Color.red;
-
-		GUI.Label (new Rect (0, 0, 200, 200), "Armed Kart Pre-Alpha", gS);
-
-		if (ShowDebugGUI) 
-		{
-			// The FPS Counter
-			GUI.Label (new Rect (0, 16, 200, 200), "FPS: " + this.CurrentFPS.ToString(), gS);
-			GUI.Label (new Rect (0, 32, 200, 200), "Vertices in current terrain: " + ((this.CurrentVertices < 0) ? "Calculating" : this.CurrentVertices.ToString()), gS);
-			GUI.Label (new Rect (0, 48, 200, 200), "Car Speed: " + pHandler.CurrentVelocity, gS);
-			//GUI.Label (new Rect (0, 64, 200, 200), "Is Colliding: " + pHandler.IsCarColliding().ToString(), gS);
-			//GUI.Label (new Rect (0, 80, 200, 200), "\tColliding Angle: " + pHandler.GetCollidingAngle().ToString(), gS);
-		}
 
 		var raceFinishedStyle = new GUIStyle (gS);
 		raceFinishedStyle.fontSize = 65;
@@ -108,7 +94,7 @@ public class GUIHandler : MonoBehaviour
 			                     GetTextWidth (lapText, lapStyle), lapStyle.fontSize), lapText, lapStyle);
 		}
 
-		if (false) //playerHandler.GetHasFinishedRace() 
+		if (playerHandler.HasFinishedRace()) //playerHandler.GetHasFinishedRace() 
 		{
 			if (!StopShowingRaceFinishedTexts)
 			{
@@ -133,8 +119,8 @@ public class GUIHandler : MonoBehaviour
 	{
 		this.StopShowingRaceFinishedTexts = true;
 
-		var rCanvas = GameObject.FindGameObjectWithTag("RaceCanvas").GetComponent<Canvas>();
-		rCanvas.enabled = true;
+		//var rCanvas = GameObject.FindGameObjectWithTag("RaceCanvas").GetComponent<Canvas>();
+		//rCanvas.enabled = true;
 	}
 
 	private float CenterScreenX(string text, GUIStyle style)

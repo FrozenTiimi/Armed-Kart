@@ -47,12 +47,8 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Handlers\AIEngine.cs" />
-     <Compile Include="Assets\Handlers\AIHandler.cs" />
      <Compile Include="Assets\Handlers\ApplicationModel.cs" />
-     <Compile Include="Assets\Handlers\BasicEntityHandler.cs" />
      <Compile Include="Assets\Handlers\CameraHandler.cs" />
-     <Compile Include="Assets\Handlers\CarButtonHandler.cs" />
-     <Compile Include="Assets\Handlers\CarHandler.cs" />
      <Compile Include="Assets\Handlers\CarSelect.cs" />
      <Compile Include="Assets\Handlers\CheckpointHandler.cs" />
      <Compile Include="Assets\Handlers\GUIHandler.cs" />
@@ -60,9 +56,8 @@
      <Compile Include="Assets\Handlers\GoalHandler.cs" />
      <Compile Include="Assets\Handlers\MainMenuButtonHandler.cs" />
      <Compile Include="Assets\Handlers\MinimapHandler.cs" />
-     <Compile Include="Assets\Handlers\MultiplayerHandler.cs" />
      <Compile Include="Assets\Handlers\NameFieldHandler.cs" />
-     <Compile Include="Assets\Handlers\PlayerHandler.cs" />
+     <Compile Include="Assets\Handlers\PlayButtonHandler.cs" />
      <Compile Include="Assets\Handlers\RaceCanvasButtonHandler.cs" />
      <Compile Include="Assets\Handlers\Utilities\ExtensionUtils.cs" />
      <Compile Include="Assets\Handlers\Utilities\MathUtils.cs" />
